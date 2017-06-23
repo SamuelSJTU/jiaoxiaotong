@@ -7,13 +7,7 @@ https://aka.ms/abs-node-waterfall
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
 var path = require('path');
-var exec = require('child_process').exec;
-var filename = 'test.py'
-var editor={
-    "name":'alex',
-    "age":18,
-    "address":'fghjh'
-};
+
 console.log(process.env.NODE_ENV)
 
 var useEmulator = (process.env.NODE_ENV == 'development');
@@ -25,32 +19,12 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
     openIdMetadata: process.env['BotOpenIdMetadata']
 });
 
-var global = new Object();
-
 var bot = new builder.UniversalBot(connector);
 bot.localePath(path.join(__dirname, './locale'));
 
 bot.dialog('/', [
     function (session) {
-        var str = '{\\"name\\":\\"alex\\",\\"age\\":18,\\"address\\":\\"sdsdd\\"}'; //change the javascriptobject to jsonstring
-        exec('python '+filename+' '+str,function(err,stdout,stdin){
-
-        if(err){
-            console.log('err');
-        }
-        if(stdout)
-        {
-            //parse the string
-            console.log(stdout);
-            var astr = stdout.split('\r\n').join('');//delete the \r\n
-            global.obj = JSON.parse(astr);
-
-            console.log('name',global.obj.name);
-            console.log('age',global.obj.age);
-            console.log('gender',global.obj.gender);
-        }
-        });
-        builder.Prompts.text(session, "Hello... What's your name?"+global.obj.name);
+        builder.Prompts.text(session, "Hello... What's your name?");
 
     },
     function (session, results) {
