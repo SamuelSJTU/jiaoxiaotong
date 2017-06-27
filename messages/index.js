@@ -5,17 +5,16 @@ https://aka.ms/abs-node-waterfall
 -----------------------------------------------------------------------------*/
 "use strict";
 
-var fs = require('fs');
-var myutils = require('./myutils.js');
-var luis = require('./luis_api.js');
-var read = require('./read.js');
 
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
 var path = require('path');
 
-var KB = read.read();
-console.log(KB);
+var fs = require('fs');
+var myutils = require('./myutils.js');
+var luis = require('./luis_api.js');
+var read = require('./read.js');
+
 
 var useEmulator = (process.env.NODE_ENV == 'development');
 //var useEmulator = true;
@@ -81,6 +80,8 @@ bot.dialog('/', [
         session.send("我明白了... " + session.userData.name + 
                     " you've been programming for " + session.userData.coding + 
                     " years and use " + session.userData.language + ".");
+        var KB = read.read();
+        console.log(KB);
     }
 ]);
 
