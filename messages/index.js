@@ -25,7 +25,7 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
     stateEndpoint: process.env['BotStateEndpoint'],
     openIdMetadata: process.env['BotOpenIdMetadata']
 });
-var connector = new builder.ConsoleConnector().listen();
+//var connector = new builder.ConsoleConnector().listen();  // 使用控制台进行测试
 var bot = new builder.UniversalBot(connector);
 bot.localePath(path.join(__dirname, './locale'));
 var stack = new Array();  // 
@@ -65,13 +65,13 @@ bot.dialog('/', [
     }
 ]);
 
-// if (useEmulator) {
-//     var restify = require('restify');
-//     var server = restify.createServer();
-//     server.listen(3978, function() {
-//         console.log('test bot endpont at http://localhost:3978/api/messages');
-//     });
-//     server.post('/api/messages', connector.listen());    
-// } else {
-//     module.exports = { default: connector.listen() }
-// }
+if (useEmulator) {
+    var restify = require('restify');
+    var server = restify.createServer();
+    server.listen(3978, function() {
+        console.log('test bot endpont at http://localhost:3978/api/messages');
+    });
+    server.post('/api/messages', connector.listen());    
+} else {
+    module.exports = { default: connector.listen() }
+}
