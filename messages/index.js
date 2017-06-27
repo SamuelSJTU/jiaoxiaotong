@@ -81,7 +81,7 @@ bot.dialog('/', [
                     " you've been programming for " + session.userData.coding + 
                     " years and use " + session.userData.language + ".");
         var KB = read.read();
-        console.log(KB);
+       // console.log(KB);
     }
 ]);
 
