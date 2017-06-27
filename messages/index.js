@@ -17,7 +17,7 @@ var read = require('./read.js');
 
 
 var useEmulator = (process.env.NODE_ENV == 'development');
-//var useEmulator = true;
+var useEmulator = true;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],
@@ -81,7 +81,7 @@ bot.dialog('/', [
                     " you've been programming for " + session.userData.coding + 
                     " years and use " + session.userData.language + ".");
         var KB = read.read();
-       // console.log(KB);
+        console.log(KB);
     }
 ]);
 
