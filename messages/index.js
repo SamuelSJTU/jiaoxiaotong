@@ -5,10 +5,10 @@ https://aka.ms/abs-node-waterfall
 -----------------------------------------------------------------------------*/
 "use strict";
 
-// var fs = require('fs');
-// var myutils = require('./myutils.js');
-// var luis = require('./luis_api.js');
-// var read = require('./read.js');
+var fs = require('fs');
+var myutils = require('./myutils.js');
+var luis = require('./luis_api.js');
+var read = require('./read.js');
 
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
