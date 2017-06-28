@@ -15,10 +15,9 @@ var myutils = require('./myutils.js');
 var luis = require('./luis_api.js');
 var read = require('./read.js');
 
-
 var useEmulator = (process.env.NODE_ENV == 'development');
 //var useEmulator = true;
-console.log(useEmulator);
+//console.log(useEmulator);
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],
@@ -75,7 +74,7 @@ bot.dialog('/', [
     function (session, results) {
         session.userData.coding = results.response;
         builder.Prompts.choice(session, "你最擅长的bug生产模式?", ["JavaScript", "Python", "C++"],{listStyle:builder.ListStyle.button});
-        var data = fs.readFile("read.js","utf-8");
+        //var data = fs.readFile("read.js","utf-8");
     },
     function (session, results) {
         session.userData.language = results.response.entity;
