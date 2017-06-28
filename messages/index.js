@@ -81,7 +81,7 @@ bot.dialog('/', [
         session.send("我明白了... " + session.userData.name + 
                     " you've been programming for " + session.userData.coding + 
                     " years and use " + session.userData.language + ".");
-        var KB = read.read();
+        var KB = fs.readFileSync(path.join(__dirname, './data.txt'),"utf-8");
         session.send(KB);
         //console.log(KB);
     }
