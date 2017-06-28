@@ -75,7 +75,6 @@ bot.dialog('/', [
     function (session, results) {
         session.userData.coding = results.response;
         builder.Prompts.choice(session, "你最擅长的bug生产模式?", ["JavaScript", "Python", "C++"],{listStyle:builder.ListStyle.button});
-        //var data = fs.readFile("read.js","utf-8");
     },
     function (session, results) {
         session.userData.language = results.response.entity;
@@ -83,6 +82,7 @@ bot.dialog('/', [
                     " you've been programming for " + session.userData.coding + 
                     " years and use " + session.userData.language + ".");
         var KB = read.read();
+        session.send(KB);
         //console.log(KB);
     }
 ]);
