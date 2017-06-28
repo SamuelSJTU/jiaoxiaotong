@@ -65,6 +65,7 @@ bot.dialog('/', [
     // },
     function(session){
         //session.userData.name = session.message.text;
+        session.send(__dirname);
         builder.Prompts.text(session,"为什么你要殴打小怪兽！");
     },
     function (session, results) {
