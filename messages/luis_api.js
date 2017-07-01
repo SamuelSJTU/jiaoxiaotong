@@ -17,7 +17,7 @@ module.exports = {
         var request_timer = setTimeout(function() {
             request.abort();
             console.log('Request Timeout.');
-        }, 10000);
+        }, 20000);
         var options = {
             host: 'southeastasia.api.cognitive.microsoft.com',
             port: 443,
