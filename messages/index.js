@@ -72,8 +72,8 @@ bot.dialog('/', [
             console.log('描述=',qdescriptions);
             console.log('意图=',qintent);
 
-            var answer = myutils.process(lastentity,qrelations,qentities,qdescriptions,qintent,dataset);
-            lastentity = answer;
+            var answer = myutils.process('',qrelations,qentities,qdescriptions,qintent,dataset);
+            if(answer=='i dont know') answer = myutils.process(lastentity,qrelations,qentities,qdescriptions,qintent,dataset);
             console.log('answer= '+ answer);
 
             session.send(answer);
