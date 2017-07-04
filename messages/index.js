@@ -15,7 +15,7 @@ var myutils = require('./myutils.js');
 var luis = require('./luis_api.js');
 var read = require('./read.js');
 
-var KB = read.read()
+var dataset = read.read()
 
 var useEmulator = (process.env.NODE_ENV == 'development');
 console.log(useEmulator);
@@ -28,40 +28,54 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
 //var connector = new builder.ConsoleConnector().listen();  // 使用控制台进行测试
 var bot = new builder.UniversalBot(connector);
 bot.localePath(path.join(__dirname, './locale'));
-var stack = new Array();  //
-var b=10;
+var lastentity = ''; 
+
 bot.dialog('/', [
     function (session) {
         var question = session.message.text;
         if(!question) question = '一个输入错误';  // 设置非空
         luis.askLuis(question,function(data){  // 自己定义回调处理json，类似这种方式
             //console.log(JSON.stringify(data));
-            console.log(b);
-            b=b+1;
+            myutils.saveFile(question,path.join(__dirname, './qlog.txt'));
+
             var entities = data.entities;
-            var qrelation;
+            var qrelations = new Array();
             var qentities = new Array();
-            var qdescription;
+            var qdescriptions = new Array();
+            var qintent = data.topScoringIntent== undefined ? '' : data.topScoringIntent.intent;
+            //其中的内容应包含两个 entity的值与前后index用于唯一标示
             for(var i in entities){
                 var entity = entities[i];
-                var val = entity['resolution']['values'][0];
+                var val = entity['resolution']['values']==undefined ? entity['resolution']['value'] : entity['resolution']['values'][0];
+                var si = entity.startIndex;
+                var ei = entity.endIndex;
                 if(entity['type']=='关系'){
-                    qrelation=val;
-                }else if(entity['type']=='定语'){
-                    qdescription=val;
+                    qrelations.push([val,si,ei]);
+                }else if(entity['type']=='定语' || entities['type']=='builtin.number'){
+                    qdescriptions.push([val,si,ei]);
                 }else{
-                    qentities.push(val);
+                    qentities.push([val,si,ei]);
                 }
             }
+
             qentities = myutils.unique(qentities);
-            console.log('关系=',qrelation);
+            qrelations = myutils.unique(qrelations);
+            qdescriptions = myutils.unique(qdescriptions);
+
+            var qall = qentities.concat(qrelations).concat(qdescriptions);
+            qentities = myutils.removeSmallEntity(qentities,qall);
+            qrelations = myutils.removeSmallEntity(qrelations,qall);
+            qdescriptions = myutils.removeSmallEntity(qdescriptions,qall);
+
+            console.log('关系=',qrelations);
             console.log('实体=',qentities);
-            console.log('描述=',qdescription);
-            var answer = '你貌似提出了一个世界级难题';
-            for(var i in KB){
-                var kb = KB[i];
-                if(qentities[0] == kb[0] && qrelation == kb[1]) answer=kb[2];
-            }
+            console.log('描述=',qdescriptions);
+            console.log('意图=',qintent);
+
+            var answer = myutils.process(lastentity,qrelations,qentities,qdescriptions,qintent,dataset);
+            lastentity = answer;
+            console.log('answer= '+ answer);
+
             session.send(answer);
         });
     }
