@@ -30,7 +30,7 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
 var bot = new builder.UniversalBot(connector);
 bot.localePath(path.join(__dirname, './locale'));
 var lastentity = '';  //
- 
+var lastquestionentity = '';
 bot.dialog('/', [
     function (session) {
         var question = session.message.text;
@@ -75,6 +75,7 @@ function SetAnswer(session,question){
                 }
             }
             qentities = myutils.unique(qentities); qentities = myutils.removeSJTU(qentities);
+            if(qentities!=undefined && qentities[0]!=undefined &&　qentities[0][0]!=undefined) lastquestionentity = qentities[0][0];
             qrelations = myutils.unique(qrelations);
             qdescriptions = myutils.unique(qdescriptions);
 
@@ -83,21 +84,25 @@ function SetAnswer(session,question){
             qrelations = myutils.removeSmallEntity(qrelations,qall);
             qdescriptions = myutils.removeSmallEntity(qdescriptions,qall);
 
-            console.log('关系=',qrelations,'实体=',qentities,'描述=',qdescriptions,'意图=',qintent,'last=',lastentity);
+            console.log('关系=',qrelations,'实体=',qentities,'描述=',qdescriptions,'意图=',qintent,'last=',lastentity,'lastquestionentity=',lastquestionentity);
             // console.log('实体=',qentities);
             // console.log('描述=',qdescriptions);
             // console.log('意图=',qintent);
 
             var answer = myutils.process('',qrelations,qentities,qdescriptions,qintent,dataset);
             if(answer == 'i dont know') answer = myutils.process(lastentity,qrelations,qentities,qdescriptions,qintent,dataset);
+            if(answer == 'i dont know') answer = myutils.process(lastquestionentity,qrelations,qentities,qdescriptions,qintent,dataset);
+            if(answer == 'i dont know') answer = myutils.process('上海交通大学',qrelations,qentities,qdescriptions,qintent,dataset);
             if(answer == '是' || answer == '不是'){
-                lastentity = qentities[0[0]];
+                lastentity = qentities[0][0];
             }else if(answer == ''){
                 lastentity = '';
             }else{
                 lastentity = answer;
             }
             console.log('answer= '+ answer);
+            // fs.writeFileSync(respath,no+'\t'+answer+'\t'+question+'\t'+trueanswer+'\t'+'\r\n',fileoptions);
+            // fs.writeFileSync('./entities.txt',no+'\t'+qdescriptions.toString()+'\r\n',fileoptions);
             session.send(answer);
         });
 }

@@ -34,10 +34,18 @@ module.exports = {
 				var kb = dataset[i];
 				//找到所有单描述的
 				var tags = kb.slice(3,kb.length);
-				if(qentities.indexOf(kb[0])!=-1 && qentities.indexOf(kb[2])!=-1 && this.isChildSet(puredes,tags) && qrelations.indexOf(kb[1])!=-1){
-					answer= true;
-					break;
-				} 
+				if(qrelations.length==0){
+					if(qentities.indexOf(kb[0])!=-1 && qentities.indexOf(kb[2])!=-1 && this.isChildSet(puredes,tags)){
+						answer= true;
+						break;
+					} 
+				}else{
+					if(qentities.indexOf(kb[0])!=-1 && qentities.indexOf(kb[2])!=-1 && this.isChildSet(puredes,tags) && qrelations.indexOf(kb[1])!=-1){
+						answer= true;
+						break;
+					} 
+				}
+				
 			}
 
 			//第二种判别if的方法
