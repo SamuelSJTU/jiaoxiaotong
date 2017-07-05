@@ -31,6 +31,7 @@ var bot = new builder.UniversalBot(connector);
 bot.localePath(path.join(__dirname, './locale'));
 var lastentity = '';  //
 var lastquestionentity = '';
+var lastquestionrelation = '';
 bot.dialog('/', [
     function (session) {
         var question = session.message.text;
@@ -75,9 +76,10 @@ function SetAnswer(session,question){
                 }
             }
             qentities = myutils.unique(qentities); 
-            if(qentities.length>=3)
-                qentities = myutils.removeSJTU(qentities);
-            if(qentities!=undefined && qentities[0]!=undefined &&　qentities[0][0]!=undefined) lastquestionentity = qentities[0][0];
+            qentities = deleteSJTU(qentities,qintent);
+            console.log('qe',qentities);
+            if(qentities!=undefined && qentities[0]!=undefined &&　qentities[0][0]!=undefined) lastquestionentity = qentities;
+            if(qrelations!=undefined && qrelations[0]!=undefined && qrelations[0][0]!=undefined) lastquestionrelation = qrelations[0][0];
             qrelations = myutils.unique(qrelations);
             qdescriptions = myutils.unique(qdescriptions);
 
@@ -91,12 +93,17 @@ function SetAnswer(session,question){
             // console.log('描述=',qdescriptions);
             // console.log('意图=',qintent);
 
-            var answer = myutils.process('',qrelations,qentities,qdescriptions,qintent,dataset);
-            if(answer == 'i dont know') answer = myutils.process(lastentity,qrelations,qentities,qdescriptions,qintent,dataset);
-            if(answer == 'i dont know') answer = myutils.process(lastquestionentity,qrelations,qentities,qdescriptions,qintent,dataset);
-            if(answer == 'i dont know') answer = myutils.process('上海交通大学',qrelations,qentities,qdescriptions,qintent,dataset);
+            var answer = myutils.process('','',qrelations,qentities,qdescriptions,qintent,dataset,question);
+            if(answer == 'i dont know') answer = myutils.process(lastentity,'',qrelations,qentities,qdescriptions,qintent,dataset); //最开始的问法
+            if(answer == 'i dont know'){
+                qentities = qentities.concat(lastquestionentity);
+                qentities = deleteSJTU(qentities);
+                answer = myutils.process('',lastquestionrelation,qrelations,qentities,qdescriptions,qintent,dataset); //若把上次的实体全部加入
+            } 
+            if(answer == 'i dont know') answer = myutils.process('上海交通大学','',qrelations,qentities,qdescriptions,qintent,dataset);
             if(answer == '是' || answer == '不是'){
-                lastentity = qentities[0][0];
+                if(qentities.length>0)
+                    lastentity = qentities[0][0];
             }else if(answer == ''){
                 lastentity = '';
             }else{
@@ -107,4 +114,14 @@ function SetAnswer(session,question){
             // fs.writeFileSync('./entities.txt',no+'\t'+qdescriptions.toString()+'\r\n',fileoptions);
             session.send(answer);
         });
+}
+function deleteSJTU(entities,intent){
+    if(intent == 'AskIf'){
+        if(entities.length>=3) return myutils.removeSJTU(entities);
+        else return entities;
+    }else{
+        if(entities.length>=2)  return myutils.removeSJTU(entities);
+        else return entities;
+    }
+
 }
