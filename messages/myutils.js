@@ -25,20 +25,31 @@ module.exports = {
 			var all = qentities.concat(qrelations);
 			var puredes=[];
 			for(var i in qdescriptions){
-				if(this.indexOfArray(qdescriptions[i],all)) puredes.push(qdescriptions[i]);
+				if(this.indexOfArray(qdescriptions[i],all)==-1) puredes.push(qdescriptions[i]);
 			}
 			qentities = this.disIndex(qentities); puredes = this.disIndex(puredes);
 			qrelations = this.disIndex(qrelations);
+			console.log('pudre'+puredes);
 			for(var i in dataset){
 				var kb = dataset[i];
 				//找到所有单描述的
 				var tags = kb.slice(3,kb.length);
-				if(qentities.indexOf(kb[0])!=-1 && qrelations.indexOf(kb[1])!=-1 && this.isChildSet(puredes,tags)){
+				if(qentities.indexOf(kb[0])!=-1 && qentities.indexOf(kb[2])!=-1 && this.isChildSet(puredes,tags) && qrelations.indexOf(kb[1])!=-1){
 					answer= true;
 					break;
 				} 
 			}
-			return answer+'';
+
+			//第二种判别if的方法
+			// singleBestPair = this.getOneLogicBestPair(qentities,qrelations,puredes,dataset);
+			// if(singleBestPair!=undefined && singleBestPair[1]!=-1){
+			// 	if(qentities.indexOf(singleBestPair[0])!=-1){
+					
+			// 		answer=true;
+			// 	}
+			// }
+
+			return answer ? '是' : '不是';
 		}else{
 			answer = 'i dont know';
 			// console.log(answer);
@@ -54,6 +65,7 @@ module.exports = {
 			}else{
 				singleBestPair = this.getOneLogicBestPair(this.disIndex(qentities),this.disIndex(qrelations),this.disIndex(qdescriptions),dataset);
 			}
+			if(singleBestPair == undefined) return 'i dont know';
 			console.log('singlebest= '+singleBestPair);
 			//若存在复合逻辑
 			var doubleBestPair = [];
@@ -61,7 +73,7 @@ module.exports = {
 				return singleBestPair==undefined ? 'i dont know' : singleBestPair[0];
 			}else{
 				var answ1 = this.getOneLogicBestPair(this.disIndex(qentities),this.disIndex(qrelations),this.disIndex(qdescriptions),dataset);
-				if(answ1[1]!=0){
+				if(answ1 != undefined && answ1[1]!=0){
 					var answ2 = this.getOneLogicBestPair([answ1[0]],this.disIndex(qrelations),this.disIndex(qdescriptions),dataset);
 					console.log('answ2: '+answ2);
 					if(answ2[1]!=-1) doubleBestPair = answ2;
@@ -187,6 +199,24 @@ module.exports = {
 			if(set2.indexOf(set1[i])==-1) return false;
 		}
 		return true;
+	},
+	colleges:['计算机科学与工程系','船舶海洋与建筑工程学院','机械与动力工程学院','电子信息与电气工程学院','材料科学与工程学院','环境科学与工程学院','生物医学工程学院','航空航天学院','数学科学学院','物理与天文学院','化学化工学院','致远学院','生命科学技术学院','农业与生物学院','医学院','药学院','安泰经济与管理学院','凯原法学院','外国语学院','人文学院','马克思主义学院','国际与公共事务学院','媒体与设计学院','体育系','上海交通大学上海高级金融学院','上海交大密西根学院','上海交大-巴黎高科卓越工程师学院','上海交大-南加州大学文化创意产业学院','中欧国际工商学院',
+],
+	removeSJTU:function(array){
+		var res = [];
+		var tag = false;
+		for(var i in array){
+			if(this.colleges.indexOf(array[i][0])!=-1){
+				tag = true;break;
+			}
+		}
+		if(tag){
+			for(var i in array){
+				if(array[i][0]!='上海交通大学') res.push(array[i]);
+			}
+		}
+		if(tag) return res;
+		else return array;
 	}	
 	
 }
