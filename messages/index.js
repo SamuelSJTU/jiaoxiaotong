@@ -54,7 +54,7 @@ function SetAnswer(session,question){
     luis.askLuis(question,function(data){  // 自己定义回调处理json，类似这种方式
             //console.log(JSON.stringify(data));
             // lastentity = '林忠钦';
-            fs.writeFileSync('./log.txt',question+'\r\n',fileoptions);
+            fs.writeFileSync(path.join(__dirname, './log.txt'),question+'\r\n',fileoptions);
             var entities = data.entities;
             var qrelations = new Array();
             var qentities = new Array();
