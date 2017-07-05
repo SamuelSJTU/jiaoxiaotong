@@ -74,7 +74,9 @@ function SetAnswer(session,question){
                     qentities.push([val,si,ei]);
                 }
             }
-            qentities = myutils.unique(qentities); qentities = myutils.removeSJTU(qentities);
+            qentities = myutils.unique(qentities); 
+            if(qentities.length>=3)
+                qentities = myutils.removeSJTU(qentities);
             if(qentities!=undefined && qentities[0]!=undefined &&　qentities[0][0]!=undefined) lastquestionentity = qentities[0][0];
             qrelations = myutils.unique(qrelations);
             qdescriptions = myutils.unique(qdescriptions);
