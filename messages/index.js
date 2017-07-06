@@ -88,7 +88,7 @@ function SetAnswer(session,question){
             qrelations = myutils.removeSmallEntity(qrelations,qall);
             qdescriptions = myutils.removeSmallEntity(qdescriptions,qall);
 
-            console.log('关系=',qrelations,'实体=',qentities,'描述=',qdescriptions,'意图=',qintent,'last=',lastentity,'lastquestionentity=',lastquestionentity);
+            //console.log('关系=',qrelations,'实体=',qentities,'描述=',qdescriptions,'意图=',qintent,'last=',lastentity,'lastquestionentity=',lastquestionentity);
             // console.log('实体=',qentities);
             // console.log('描述=',qdescriptions);
             // console.log('意图=',qintent);
