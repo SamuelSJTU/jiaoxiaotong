@@ -19,7 +19,6 @@ var dataset = read.read()
 
 
 var useEmulator = (process.env.NODE_ENV == 'development');
-useEmulator = true;
 console.log(useEmulator);
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
