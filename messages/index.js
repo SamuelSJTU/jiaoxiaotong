@@ -19,6 +19,7 @@ var dataset = read.read()
 
 
 var useEmulator = (process.env.NODE_ENV == 'development');
+useEmulator = true;
 console.log(useEmulator);
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
@@ -32,9 +33,11 @@ bot.localePath(path.join(__dirname, './locale'));
 var lastentity = '';  //
 var lastquestionentity = '';
 var lastquestionrelation = '';
+// conversion_id
 bot.dialog('/', [
     function (session) {
         var question = session.message.text;
+        console.log(session.message.id + " " + session.message.name);
         if(!question) question = '一个输入错误';  // 设置非空
         else SetAnswer(session,question);
     }
