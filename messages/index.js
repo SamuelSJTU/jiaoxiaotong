@@ -37,7 +37,7 @@ var lastquestionrelation = '';
 bot.dialog('/', [
     function (session) {
         var question = session.message.text;
-        console.log(session.message.id + " " + session.message.name);
+        session.send(session.message.id + " " + session.message.name);
         if(!question) question = '一个输入错误';  // 设置非空
         else SetAnswer(session,question);
     }
