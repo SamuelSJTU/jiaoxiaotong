@@ -29,6 +29,12 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
 //var connector = new builder.ConsoleConnector().listen();  // 使用控制台进行测试
 var bot = new builder.UniversalBot(connector);
 bot.localePath(path.join(__dirname, './locale'));
+// 将上一个问题的结果保存下来，对不同的conversionid进行存储
+// 设置定时器，对每个conversionid加一个活跃度，每个一个小时加一，设置一个检查其活跃度的定时器，若10个小时不活跃，清除该用户上下午信息
+// 可以对id进行处理，比如添加一些头，从而设置不同活跃度权重，默认以socketid作为conversionid
+
+var lastDict = new Object();
+
 var lastentity = '';  //
 var lastquestionentity = '';
 var lastquestionrelation = '';
@@ -36,9 +42,20 @@ var lastquestionrelation = '';
 bot.dialog('/', [
     function (session) {
         var question = session.message.text;
-        session.send(session.message.user.id + " " + session.message.user.name);
+       // session.send(session.message.user.id + " " + session.message.user.name);
+        var name = session.message.user.name;
+        // 将conversionid传入，从而得到上一个人的上下文
+        if(lastDict.hasOwnProperty(name)){
+            lastentity = lastDict[name].lastentity;
+            lastquestionentity = lastDict[name].lastquestionentity;
+            lastquestionrelation = lastDict[name].lastquestionrelation;
+        } else{
+            lastentity = '';  //
+            lastquestionentity = '';
+            lastquestionrelation = '';
+        }
         if(!question) question = '一个输入错误';  // 设置非空
-        else SetAnswer(session,question);
+        else SetAnswer(session,question,name);
     }
 ]);
 
@@ -53,7 +70,7 @@ if (useEmulator) {
     module.exports = { default: connector.listen() }
 }
 
-function SetAnswer(session,question){
+function SetAnswer(session,question,clientName){
     luis.askLuis(question,function(data){  // 自己定义回调处理json，类似这种方式
             //console.log(JSON.stringify(data));
             // lastentity = '林忠钦';
@@ -114,6 +131,15 @@ function SetAnswer(session,question){
             console.log('answer= '+ answer);
             // fs.writeFileSync(respath,no+'\t'+answer+'\t'+question+'\t'+trueanswer+'\t'+'\r\n',fileoptions);
             // fs.writeFileSync('./entities.txt',no+'\t'+qdescriptions.toString()+'\r\n',fileoptions);
+
+            var lastObj = {
+                'lastentity':lastentity,
+                'lastquestionentity':lastquestionentity,
+                'lastquestionrelation':lastquestionrelation
+            };
+
+            lastDict[clientName] = lastObj;
+
             session.send(answer);
         });
 }
