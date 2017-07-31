@@ -34,6 +34,19 @@ bot.localePath(path.join(__dirname, './locale'));
 // 可以对id进行处理，比如添加一些头，从而设置不同活跃度权重，默认以socketid作为conversionid
 
 var lastDict = new Object();
+var dictActivity = new Object();
+
+setInterval(function(){
+    for(var key in dictActivity){
+        if(dictActivity[key]>10){
+            delete dictActivity[key];
+        }else{
+            dictActivity[key] = dictActivity[key] + 1;
+        }
+    }
+},600000); // 10min  单位ms 清除之前的信息,100min不连接清除上下文
+
+
 
 var lastentity = '';  //
 var lastquestionentity = '';
@@ -42,17 +55,19 @@ var lastquestionrelation = '';
 bot.dialog('/', [
     function (session) {
         var question = session.message.text;
-       // session.send(session.message.user.id + " " + session.message.user.name);
+        // session.send(session.message.user.id + " " + session.message.user.name);
         var name = session.message.user.name;
-        // 将conversionid传入，从而得到上一个人的上下文
+        // 将conversionid传入，从而得到上一个人的上下文,刷新用户活跃度
         if(lastDict.hasOwnProperty(name)){
             lastentity = lastDict[name].lastentity;
             lastquestionentity = lastDict[name].lastquestionentity;
             lastquestionrelation = lastDict[name].lastquestionrelation;
+            dictActivity[name] = 0;
         } else{
-            lastentity = '';  //
+            lastentity = '';  
             lastquestionentity = '';
             lastquestionrelation = '';
+            dictActivity[name] = 0;
         }
         if(!question) question = '一个输入错误';  // 设置非空
         else SetAnswer(session,question,name);
