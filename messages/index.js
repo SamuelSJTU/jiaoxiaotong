@@ -20,6 +20,7 @@ var dataset = read.read()
 
 var useEmulator = (process.env.NODE_ENV == 'development');
 console.log(useEmulator);
+useEmulator = true;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],
@@ -52,11 +53,14 @@ var lastquestionrelation = '';
 // conversion_id
 bot.dialog('/', [
     function (session) {
-        selectedCardName= 'Hero card';
-        var card = createCard(selectedCardName, session);
-        // attach the card to the reply message
-        var msg = new builder.Message(session).addAttachment(card);
-        session.send(msg);
+        for(var i=0; i< CardNames.length;i++){
+            var selectedCardName = CardNames[i];
+            console.log(selectedCardName);
+            var card = createCard(selectedCardName, session);
+            // attach the card to the reply message
+            var msg = new builder.Message(session).addAttachment(card);
+            session.send(msg);
+        }
 
         var question = session.message.text;
         // session.send(session.message.user.id + " " + session.message.user.name);
