@@ -21,7 +21,7 @@ var cards = require('./cards.js');
 
 var useEmulator = (process.env.NODE_ENV == 'development');
 console.log(useEmulator);
-// useEmulator = true;
+useEmulator = true;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],

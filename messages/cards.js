@@ -13,7 +13,8 @@ createCards["cardShuttle"] = function(session){
         builder.CardImage.create(session, 'http://static.panoramio.com/photos/large/18700973.jpg')
     ])
     .buttons([
-        builder.CardAction.openUrl(session, 'http://houqin.sjtu.edu.cn/sview.asp?id=158', '查看时刻表')
+        builder.CardAction.openUrl(session, 'http://houqin.sjtu.edu.cn/sview.asp?id=158', '查看时刻表'),
+        builder.CardAction.postBack(session, 'tset', '查看时刻表')
     ]);
     // attach the card to the reply message
     return new builder.Message(session).addAttachment(card);
