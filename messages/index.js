@@ -54,17 +54,34 @@ var lastquestionrelation = '';
 // conversion_id
 bot.dialog('/', [
     function (session) {
-        for(var i=0;i<cards.cardsName.length;i++){
-            var msg = cards.createCards[cards.cardsName[i]](session);  // 返回card生成的msg
-            session.send(msg);
-        }
-        var question = session.message.text;
+        // for(var i=0;i<cards.cardsName.length;i++){
+        //     var msg = cards.createCards[cards.cardsName[i]](session);  // 返回card生成的msg
+        //     session.send(msg);
+        // }
+        // var question = session.message.text;
         // console.log(question);
         // if(question=='test'){
         //     session.send('带我去');
         //     return;
         // }
         // session.send(session.message.user.id + " " + session.message.user.name);
+        
+        if(question=='1'){
+            var msg = cards.createCards["cardBus"](session); 
+            session.send(msg);
+        }else if(question=='2'){
+            var msg = cards.createCards["cardAnthem"](session); 
+            session.send(msg);
+        }else if(question == '3'){
+            var msg = cards.createCards["cardLibrary"](session); 
+            session.send(msg);
+        }else if(question=='path'){
+            session.send('From:图书馆;To:上院');
+        }else{
+            session.send('this is answer');
+        }
+        
+        
         var name = session.message.user.name;
         // 将conversionid传入，从而得到上一个人的上下文,刷新用户活跃度
         if(lastDict.hasOwnProperty(name)){
@@ -78,8 +95,8 @@ bot.dialog('/', [
             lastquestionrelation = '';
             dictActivity[name] = 0;
         }
-        if(!question) question = '一个输入错误';  // 设置非空
-        else SetAnswer(session,question,name);
+        // if(!question) question = '一个输入错误';  // 设置非空
+        // else SetAnswer(session,question,name);
     }
 ]);
 
