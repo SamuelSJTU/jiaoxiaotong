@@ -36,20 +36,35 @@ var dataset = myio.readNewData();
 var userInfo = new Array();
 bot.dialog('/', [
     function (session) {
+        if(userInfo[userId]==undefined) userInfo['userId'] = new Array();
         var question = session.message.text;
         var useId = session.message.user.id;
-        if(userInfo[userId]!=undefined){
-            session.send('last answer'+userInfo[userId]['answer']);
-        }else{
-            session.send('last answer undefined');
-        }
-        ga.getAnswer(question,dataset,function(intent,start,end){
+        if(unserInfo[userId]['PromptStatus']=='LessonHalf'){
 
-        },function(answer){
-            session.send(answer);
-            userInfo[userId] = new Array();
-            userInfo[userId]['answer'] = answer;
-        });
+            unserInfo[userId]['PromptStatus']=='Complete';
+        }else if(unserInfo[userId]['PromptStatus']=='PathHalf'){
+            unserInfo[userId]['PromptStatus']=='Complete';
+        }else{
+             ga.getAnswer(question,dataset,
+                function(intent,start,end){
+
+                },
+                function(answer){
+                    session.send(answer);
+                    
+                    userInfo[userId]['answer'] = answer;
+                    if(answer == 'lackInfoLesson'){
+                        userInfo['userId']['PromptStatus'] = 'LessonHalf';
+                },
+                function(answer){
+
+                },
+                function(answer){
+                    unserInfo[userId]['PromptStatus']=='AskScheulQuater';
+                }
+            );
+        }
+       
 
         
 

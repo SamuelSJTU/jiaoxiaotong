@@ -7,22 +7,9 @@ var testQuestion = '上海交大校长是谁'
 var test_triple = [[['上海交通大学',1,2]],[['校长',3,4]],[['现任',0,0]]]
 var relationSet = ['职位','其他关系','学科','院长','校长','主任','党委职位'];
 //var testQuestion = '上交校长是谁？'
+var GAS = require('./getAnswerSync.js');
 
-
-
-
-module.exports = {
-	getParentRelation:function(entities){
-		realtions = [];
-		for(var i in entities){
-			var entity = entities[i];
-			if(relationSet.indexOf(entity.type)!=-1){
-				return entity.type;
-			}
-		}
-		return '';
-	},
-	getQuestionTriples:function(entities){
+function getQuestionTriples(entities){
 		var qrelations = new Array();
 		var qentities = new Array();
 		var qdescriptions = new Array();
@@ -43,8 +30,23 @@ module.exports = {
 		qrelations = myutils.unique(qrelations);
 		qdescriptions = myutils.unique(qdescriptions);
 		return [qentities,qrelations,qdescriptions];
+	}
+
+
+
+module.exports = {
+	
+	getParentRelation:function(entities){
+		realtions = [];
+		for(var i in entities){
+			var entity = entities[i];
+			if(relationSet.indexOf(entity.type)!=-1){
+				return entity.type;
+			}
+		}
+		return '';
 	},
-	getAnswer:function(Question,dataset,callbackMap,callbackAnswer){
+	getAnswer:function(Question,dataset,callbackMap,callbackAnswer,callbackLesson){
 		luis.askLuisIntent(Question,function(intentData){  // 自己定义回调处理json，类似这种方式
 			intent = intentData.topScoringIntent.intent
 			entities = intentData.entities
@@ -73,6 +75,14 @@ module.exports = {
 					// callbackAnswer(answer,questionTriple[1],questionTriple[0],questionTriple[2],intent);
 					callbackAnswer(answer);
 					break;
+				case 'AskLesson':
+					// var enin = GAS.getLessonFromQuestion(entities);
+					// var qentities = enin[0];
+					// var qrelation = enin[1];
+					var answer = GAS.getLessonAnswer(entities);
+					callbackLesson(answer);
+					break;
+
 			}
 			//myio.write('./intentExample.txt',JSON.stringify(entities));
 		});

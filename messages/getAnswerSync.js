@@ -14,6 +14,7 @@ module.exports = {
 		qrelations = new Array();
 		for(var i in entities){
 			var entity = entities[i];
+			// console.log(entity);
 			var val = entity['resolution']['values'][0];
 			if(entities[i].type == '课程关系') qrelations.push(val);
 			else if(lessonEntities.indexOf(entity.type)!=-1){
@@ -38,7 +39,8 @@ module.exports = {
 		// var entities = res[0].entities;
 		// console.log('status: '+res[1]);
 		var qentities = this.getLessonFromQuestion(entities)[0];
-		var qrelations = this.getLessonFromQuestion(entities)[1];
+		var qrelations = this.getLessonFromQuestion(entities)[1][0];
+		console.log(qentities);console.log(qrelations);
 		var answer = myu2.getAnswerLesson(qentities,qrelations);
 		return answer;
 	},
