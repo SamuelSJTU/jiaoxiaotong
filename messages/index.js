@@ -9,7 +9,7 @@ https://aka.ms/abs-node-waterfall
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
 var path = require('path');
-
+var TypeApi = 'https://southeastasia.api.cognitive.microsoft.com/luis/v2.0/apps/0b51b9e7-2200-40c5-9a7d-d644b430364e?subscription-key=fc7f3816353045959d517198742e11e3&timezoneOffset=0&verbose=true&q=';
 var fs = require('fs');
 var myutils = require('./myutils.js');
 var luis = require('./luis_api.js');
@@ -31,15 +31,16 @@ bot.localePath(path.join(__dirname, './locale'));
 // 设置定时器，对每个conversionid加一个活跃度，每个一个小时加一，设置一个检查其活跃度的定时器，若10个小时不活跃，清除该用户上下午信息
 // 可以对id进行处理，比如添加一些头，从而设置不同活跃度权重，默认以socketid作为conversionid
 
-var us = require('urllib-sync');
+var sl = require("./syncLuis.js");
 var userInfo = new Array();
 bot.dialog('/', [
     function (session) {
         var question = session.message.text;
         var useId = session.message.user.id;
         // var answer = GAS.getLessonAnswer(question);
-        var intententities = GAS.getIntentAndEntities(question);
-        var intent = intententities[0];
+        // var intententities = GAS.getIntentAndEntities(question);
+        var res = sl.getRes(question);
+        // var intent = intententities[0];
         // var entities = intententities[1];
         // if(question=='1'){
         //     var msg = cards.createCards["cardBus"](session); 
@@ -57,7 +58,7 @@ bot.dialog('/', [
         //     session.send(answer);
         // }
         // console.log(intent);
-        session.send(intent);
+        session.send(res[1]);
 
 
         // switch (intent){
