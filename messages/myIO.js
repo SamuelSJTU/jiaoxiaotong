@@ -34,8 +34,8 @@ module.exports = {
 		return datas
 	},
 	readPlace:function(){
-		// var data = rf.readFileSync(path.join(__dirname, './place.txt'),"utf-8");
-		var data = rf.readFileSync('./place.txt',"utf-8");
+		var data = rf.readFileSync(path.join(__dirname, './place.txt'),"utf-8");
+		// var data = rf.readFileSync('./place.txt',"utf-8");
 		var datas = data.split("\r\n");
 		//console.log(datas);
 		return datas;
