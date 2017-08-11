@@ -15,7 +15,7 @@ var myutils = require('./myutils.js');
 var luis = require('./luis_api.js');
 var fileoptions = {flag:'a'};
 var cards = require('./cards.js');
-//var GAS = require('./getAnswerSync.js');
+var GAS = require('./getAnswerSync.js');
 //var useEmulator = (process.env.NODE_ENV == 'development');
 var useEmulator = false;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
@@ -38,8 +38,8 @@ bot.dialog('/', [
         var question = session.message.text;
         var useId = session.message.user.id;
         // var answer = GAS.getLessonAnswer(question);
-        //var intententities = GAS.getIntentAndEntities(question);
-        // var intent = intententities[0];
+        var intententities = GAS.getIntentAndEntities(question);
+        var intent = intententities[0];
         // var entities = intententities[1];
         // if(question=='1'){
         //     var msg = cards.createCards["cardBus"](session); 
@@ -57,7 +57,7 @@ bot.dialog('/', [
         //     session.send(answer);
         // }
         // console.log(intent);
-        session.send(question);
+        session.send(intent);
 
 
         // switch (intent){
