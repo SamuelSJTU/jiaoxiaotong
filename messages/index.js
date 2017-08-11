@@ -58,7 +58,7 @@ bot.dialog('/', [
         //     var msg = cards.createCards[cards.cardsName[i]](session);  // 返回card生成的msg
         //     session.send(msg);
         // }
-        // var question = session.message.text;
+        var question = session.message.text;
         // console.log(question);
         // if(question=='test'){
         //     session.send('带我去');
