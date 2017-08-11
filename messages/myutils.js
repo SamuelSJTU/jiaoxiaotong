@@ -16,9 +16,8 @@ module.exports = {
 		//使用函数时 qentities请按句子中的Index排序
 		// if(qentities.length==0) qentities.push([lastentity,-1,-1]);
 		//将上一次entity作为一个
-		if(lastentity!='') qentities.push([lastentity,-1,-1]);
+		if(lastentity!='') qentities.push([lastentity,-1,-1]); 
 		if(lastrelation!='') qrelations.push([lastrelation,-1,-1]);
-		 
 		var answer;
 		if(intent == 'AskIf'){
 			answer = false;
@@ -29,7 +28,7 @@ module.exports = {
 			}
 			qentities = this.disIndex(qentities); puredes = this.disIndex(puredes);
 			qrelations = this.disIndex(qrelations);
-			console.log('pudre'+puredes);
+			//console.log('pudre'+puredes);
 			for(var i in dataset){
 				var kb = dataset[i];
 				//找到所有单描述的
@@ -69,7 +68,6 @@ module.exports = {
 
 		}else{   //对于AskWhat
 			answer = 'i dont know';
-			// console.log(answer);
 			var notDesRelations = [];
 			for(var i in qrelations){
 				if(this.indexOfArray(qrelations[i],qdescriptions)==-1) notDesRelations.push(qrelations[i]);
@@ -82,9 +80,9 @@ module.exports = {
 			}else{
 				singleBestPair = this.getOneLogicBestPair(this.disIndex(qentities),this.disIndex(qrelations),this.disIndex(qdescriptions),dataset);
 			}
-			console.log('singleBestPair= '+singleBestPair)
+			//console.log('singleBestPair= '+singleBestPair)
 			if(singleBestPair == undefined) return 'i dont know';
-			console.log('singlebest= '+singleBestPair);
+			//console.log('singlebest= '+singleBestPair);
 			//若存在复合逻辑
 			var doubleBestPair = [];
 			if(qrelations.length<2){
@@ -92,29 +90,33 @@ module.exports = {
 			}else{
 				var answ1 = this.getOneLogicBestPair(this.disIndex(qentities),this.disIndex(qrelations),this.disIndex(qdescriptions),dataset);
 				if(answ1 != undefined && answ1[1]!=-1){
-					var usedEntity = answ1[2];	console.log('usedEntity= '+usedEntity);
-					var usedRelation = answ1[3]; console.log('usedRelation= '+usedRelation);
-					var usedDescription = answ1[4]; console.log('usedDescription= '+usedDescription);
+					var usedEntity = answ1[2];	//console.log('usedEntity= '+usedEntity);
+					var usedRelation = answ1[3]; //console.log('usedRelation= '+usedRelation);
+					var usedDescription = answ1[4]; //console.log('usedDescription= '+usedDescription);
 					var usedAll = usedDescription; usedAll.push(usedEntity); usedAll.push(usedRelation);
-					console.log('usedAll= '+usedAll);
+					//console.log('usedAll= '+usedAll);
 					var qrelations = this.disIndex(qrelations);
 					qrelations = this.reomve12(usedAll,qrelations);
 					var qdescriptions = this.disIndex(qdescriptions); qdescriptions = this.reomve12(usedAll,qdescriptions);
-					console.log('double= '+qrelations);
+					//console.log('double= '+qrelations);
 					var answ2 = this.getOneLogicBestPair([answ1[0]],qrelations,qdescriptions,dataset);
-					console.log('answ2: '+answ2);
+					//console.log('answ2: '+answ2);
 					if(answ2!=undefined && answ2[1]!=-1) doubleBestPair = answ2;
 				}
 			}
-			console.log('doublebest= '+doubleBestPair);
+			//console.log('doublebest= '+doubleBestPair);
 			if(doubleBestPair==undefined || doubleBestPair.length == 0 || doubleBestPair[1]==-1){
 				if(singleBestPair[1]==-1) return 'i dont know';
 				// console.log(singleBestPair);
 				else return singleBestPair[0];
 			}
-			else return doubleBestPair[0];	
+			else{
+				console.log('二重逻辑works');
+				return doubleBestPair[0];	
+				
+			} 
 		}
-		return answer;
+		//return answer;
 	},
 	getDescriptionScore:function(qdescriptions,tags){
 		var score=0;
@@ -137,7 +139,8 @@ module.exports = {
 		for(var i in dataset){
 	        var kb = dataset[i];
 	        // console.log(kb);
-	        var tags = kb.slice(3,kb.length);
+	        // var tags = kb.slice(3,kb.length);  //slice为获得子数组
+	        tags = kb[3];   //对于新版本 kb[3]已经为数组
 	        if(qentity == kb[0] && qrelation == kb[1]){ //匹配到了起始entity与relationship相同的      		
 	        	var score = this.getDescriptionScore(qdescriptions,tags)[0];
 	        	var descriptions = this.getDescriptionScore(qdescriptions,tags)[1];
