@@ -11,16 +11,16 @@ var botbuilder_azure = require("botbuilder-azure");
 var path = require('path');
 
 var fs = require('fs');
-var myutils = require('./myutils.js');
-var luis = require('./luis_api.js');
-var read = require('./read.js');
-var fileoptions = {flag:'a'};
-var dataset = read.read()
+// var myutils = require('./myutils.js');
+// var luis = require('./luis_api.js');
+// var read = require('./read.js');
+// var fileoptions = {flag:'a'};
+// var dataset = read.read()
 
 
 var useEmulator = (process.env.NODE_ENV == 'development');
 console.log(useEmulator);
-// useEmulator = true;
+useEmulator = true;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],
@@ -34,9 +34,10 @@ var lastentity = '';  //
 var lastquestionentity = '';
 bot.dialog('/', [
     function (session) {
-        var question = session.message.text;
-        if(!question) question = '一个输入错误';  // 设置非空
-        else SetAnswer(session,question);
+        session.send(session.message.text);
+        // var question = session.message.text;
+        // if(!question) question = '一个输入错误';  // 设置非空
+        // else SetAnswer(session,question);
     }
 ]);
 
