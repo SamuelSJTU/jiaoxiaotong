@@ -1,4 +1,4 @@
-﻿/*-----------------------------------------------------------------------------
+/*-----------------------------------------------------------------------------
 This template demonstrates how to use Waterfalls to collect input from a user using a sequence of steps.
 For a complete walkthrough of creating this type of bot see the article at
 https://aka.ms/abs-node-waterfall
@@ -16,6 +16,7 @@ var luis = require('./luis_api.js');
 var fileoptions = {flag:'a'};
 var cards = require('./cards.js');
 var GAS = require('./getAnswerSync.js');
+var ga = require('getAnswerSync');
 //var useEmulator = (process.env.NODE_ENV == 'development');
 var useEmulator = false;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
@@ -32,39 +33,21 @@ bot.localePath(path.join(__dirname, './locale'));
 // 可以对id进行处理，比如添加一些头，从而设置不同活跃度权重，默认以socketid作为conversionid
 
 //var sl = require("./syncLuis.js");
+var dataset = myio.readNewData();
 var userInfo = new Array();
 bot.dialog('/', [
     function (session) {
+        session.send('last answer'+userInfo[userId]['answer']);
         var question = session.message.text;
         var useId = session.message.user.id;
-        // var answer = GAS.getLessonAnswer(question);
-        // var intententities = GAS.getIntentAndEntities(question);
-        try{
-            var res = sl.getRes(TypeApi,question);
-            session.send(res);
-        }catch(e){
-            session.send('TimeOut');
-        }
+        ga.getAnswer(question,dataset,function(intent,start,end){
+
+        },function(answer){
+            session.send(answer);
+            userInfo[userId]['answer'] = answer;
+        });
+
         
-        // var intent = intententities[0];
-        // var entities = intententities[1];
-        // if(question=='1'){
-        //     var msg = cards.createCards["cardBus"](session); 
-        //     session.send(msg);
-        // }else if(question=='2'){
-        //     var msg = cards.createCards["cardAnthem"](session); 
-        //     session.send(msg);
-        // }else if(question == '3'){
-        //     var msg = cards.createCards["cardLibrary"](session); 
-        //     session.send(msg);
-        // }else if(question=='path'){
-        //     session.send('From:图书馆;To:上院');
-        // }else{
-        //     var answer = GAS.getInfoAnswer('askwhat',entities,question,'lastentity','lastrelation');
-        //     session.send(answer);
-        // }
-        // console.log(intent);
-        session.send(res);
 
 
         // switch (intent){
@@ -107,14 +90,6 @@ bot.dialog('/', [
 
         // saveUserInfo(useId,question);
     }
-    // function(session,results){
-    //     // builder.Prompts.text(session, results.response);
-    //     var question = session.message.text;
-    //     var useId = session.message.user.id;
-    //     switch(userId[userId]['waterFallStatus']){
-    //         case 
-    //     }
-    // }
 ]);
 
 if (useEmulator) {

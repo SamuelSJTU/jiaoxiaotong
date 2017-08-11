@@ -49,7 +49,7 @@ module.exports = {
 			intent = intentData.topScoringIntent.intent
 			entities = intentData.entities
 			//console.log(entities);
-			console.log('Question Intemt is: ',intent);
+			console.log('Question Intent is: ',intent);
 			switch(intent){
 				case 'AskPath':
 					startEnd = new Array();
@@ -70,7 +70,8 @@ module.exports = {
 					console.log('questionTriple is: ',questionTriple);
 					//注意传入的qrealations为3元组（content,start,end）集合
 					var answer = myutils.process('','',questionTriple[1],questionTriple[0],questionTriple[2],'AskInfo',dataset);
-					callbackAnswer(answer,questionTriple[1],questionTriple[0],questionTriple[2],intent);
+					// callbackAnswer(answer,questionTriple[1],questionTriple[0],questionTriple[2],intent);
+					callbackAnswer(answer);
 					break;
 			}
 			//myio.write('./intentExample.txt',JSON.stringify(entities));
