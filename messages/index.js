@@ -15,7 +15,7 @@ var myutils = require('./myutils.js');
 var luis = require('./luis_api.js');
 var fileoptions = {flag:'a'};
 var cards = require('./cards.js');
-var GAS = require('./getAnswerSync.js');
+//var GAS = require('./getAnswerSync.js');
 //var useEmulator = (process.env.NODE_ENV == 'development');
 var useEmulator = false;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
@@ -39,8 +39,8 @@ bot.dialog('/', [
         var useId = session.message.user.id;
         // var answer = GAS.getLessonAnswer(question);
         //var intententities = GAS.getIntentAndEntities(question);
-        var intent = intententities[0];
-        var entities = intententities[1];
+        // var intent = intententities[0];
+        // var entities = intententities[1];
         // if(question=='1'){
         //     var msg = cards.createCards["cardBus"](session); 
         //     session.send(msg);
@@ -60,36 +60,36 @@ bot.dialog('/', [
         session.send(question);
 
 
-        switch (intent){
-            case 'AskInfo':
-                var answer = GAS.getInfoAnswer('askwhat',entities,question,'lastentity','lastrelation');
-                session.send(answer)
-                break;
-            case 'AskLesson':
-                var lessonEntities = GAS.getLessonFromQuestion(entities)[0];
-                userInfo[userId]['lastQuesEntity'] = lessonEntities;
-                userInfo[userId]['waterFallStatus'] = 'askLessonHalf';
-                var answer = GAS.getLessonAnswer(entities);
-                if(answer == 'LackInfoLesson'){
-                    builder.Prompts.text(session, 'Please complete your Lesson question~');
-                }else{
-                    session.send(answer);
-                }
-                break;
-            case 'AskPath':
-                var answer = GAS.getPathAnswer(entities);
-                var pathEntities = GAS.getMapFromQuestion(entities);
-                userInfo[userId]['lastQuesEntity'] = pathEntities[0];
-                userInfo[userId]['waterFallStatus'] = 'askPathHalf';
-                if(answer == 'LackInfoPath'){
-                    builder.Prompts.text(session, 'Please complete your Path question~');
-                }else{
-                    session.send(answer);
-                }
-                break;
-        }
+        // switch (intent){
+        //     case 'AskInfo':
+        //         var answer = GAS.getInfoAnswer('askwhat',entities,question,'lastentity','lastrelation');
+        //         session.send(answer)
+        //         break;
+        //     case 'AskLesson':
+        //         var lessonEntities = GAS.getLessonFromQuestion(entities)[0];
+        //         userInfo[userId]['lastQuesEntity'] = lessonEntities;
+        //         userInfo[userId]['waterFallStatus'] = 'askLessonHalf';
+        //         var answer = GAS.getLessonAnswer(entities);
+        //         if(answer == 'LackInfoLesson'){
+        //             builder.Prompts.text(session, 'Please complete your Lesson question~');
+        //         }else{
+        //             session.send(answer);
+        //         }
+        //         break;
+        //     case 'AskPath':
+        //         var answer = GAS.getPathAnswer(entities);
+        //         var pathEntities = GAS.getMapFromQuestion(entities);
+        //         userInfo[userId]['lastQuesEntity'] = pathEntities[0];
+        //         userInfo[userId]['waterFallStatus'] = 'askPathHalf';
+        //         if(answer == 'LackInfoPath'){
+        //             builder.Prompts.text(session, 'Please complete your Path question~');
+        //         }else{
+        //             session.send(answer);
+        //         }
+        //         break;
+        // }
         
-        userInfo[userId]['lastAnsEntity'] = answer;
+        // userInfo[userId]['lastAnsEntity'] = answer;
 
         // if(answer=='lackInfo'){
         //     builder.Prompts.text(session, 'Please complete your question~');
