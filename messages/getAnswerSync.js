@@ -1,11 +1,11 @@
 var lessonEntities = ['课程课程名','课程教师'];
-var myio = require('./myIO.js');
+//var myio = require('./myIO.js');
 var myu2 = require('./myutils2.js');
 var myu = require('./myutils.js');
 sy = require("./syncLuis.js");
 //var question  = "人与室内环境连之伟教室在哪";
 var relationSet = ['职位','其他关系','学科','院长','校长','主任','党委职位'];
-var dataset = myio.readNewData();
+//var dataset = myio.readNewData();
 // console.log('answer',answer);
 
 module.exports = {
