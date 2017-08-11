@@ -36,14 +36,15 @@ var dataset = myio.readNewData();
 var userInfo = new Array();
 bot.dialog('/', [
     function (session) {
+        var question = session.message.text;
+        var useId = session.message.user.id;
         if(userInfo[userId]!=undefined){
             session.send('last answer'+userInfo[userId]['answer']);
         }else{
             session.send('last answer undefined');
         }
         
-        var question = session.message.text;
-        var useId = session.message.user.id;
+        
         ga.getAnswer(question,dataset,function(intent,start,end){
 
         },function(answer){
