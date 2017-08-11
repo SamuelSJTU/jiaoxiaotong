@@ -17,7 +17,7 @@ var fileoptions = {flag:'a'};
 var cards = require('./cards.js');
 //var GAS = require('./getAnswerSync.js');
 //var useEmulator = (process.env.NODE_ENV == 'development');
-var useEmulator = true;
+var useEmulator = false;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],
@@ -120,19 +120,19 @@ if (useEmulator) {
 
 
 
-function deleteSJTU(entities,intent){
-    if(intent == 'AskIf'){
-        if(entities.length>=3) return myutils.removeSJTU(entities);
-        else return entities;
-    }else{
-        if(entities.length>=2)  return myutils.removeSJTU(entities);
-        else return entities;
-    }
-}
+// function deleteSJTU(entities,intent){
+//     if(intent == 'AskIf'){
+//         if(entities.length>=3) return myutils.removeSJTU(entities);
+//         else return entities;
+//     }else{
+//         if(entities.length>=2)  return myutils.removeSJTU(entities);
+//         else return entities;
+//     }
+// }
 
-function saveUserInfo(userId,question){
-    userInfo[userId]['question'] = question;
-}
+// function saveUserInfo(userId,question){
+//     userInfo[userId]['question'] = question;
+// }
 
 
 
