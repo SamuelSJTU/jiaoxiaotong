@@ -39,7 +39,7 @@ bot.dialog('/', [
         var useId = session.message.user.id;
         // var answer = GAS.getLessonAnswer(question);
         // var intententities = GAS.getIntentAndEntities(question);
-        var res = sl.getRes(TypeApi,question);
+        //var res = sl.getRes(TypeApi,question);
         // var intent = intententities[0];
         // var entities = intententities[1];
         // if(question=='1'){
@@ -58,7 +58,7 @@ bot.dialog('/', [
         //     session.send(answer);
         // }
         // console.log(intent);
-        session.send(res[1]);
+        session.send(question);
 
 
         // switch (intent){
