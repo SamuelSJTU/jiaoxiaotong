@@ -31,7 +31,7 @@ bot.localePath(path.join(__dirname, './locale'));
 // 设置定时器，对每个conversionid加一个活跃度，每个一个小时加一，设置一个检查其活跃度的定时器，若10个小时不活跃，清除该用户上下午信息
 // 可以对id进行处理，比如添加一些头，从而设置不同活跃度权重，默认以socketid作为conversionid
 
-var us = require('urllib-sync');
+//var us = require('urllib-sync');
 var userInfo = new Array();
 bot.dialog('/', [
     function (session) {
