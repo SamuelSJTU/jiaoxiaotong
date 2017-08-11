@@ -15,7 +15,7 @@ var myutils = require('./myutils.js');
 var luis = require('./luis_api.js');
 var fileoptions = {flag:'a'};
 var cards = require('./cards.js');
-var GAS = require('./getAnswerSync.js');
+//var GAS = require('./getAnswerSync.js');
 //var useEmulator = (process.env.NODE_ENV == 'development');
 var useEmulator = true;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
@@ -57,30 +57,35 @@ bot.dialog('/', [
         //     session.send(answer);
         // }
         // console.log(intent);
-        switch (intent){
-            case 'AskInfo':
-                var answer = GAS.getInfoAnswer('askwhat',entities,question,'lastentity','lastrelation');
-                session.send(answer)
-                break;
-            case 'AskLesson':
-                var answer = GAS.getLessonAnswer(entities);
-                if(answer == 'LackInfoLesson'){
-                    builder.Prompts.text(session, 'Please complete your Lesson question~');
-                }else{
-                    session.send(answer);
-                }
-                break;
-            case 'AskPath':
-                var answer = GAS.getPathAnswer(entities);
-                // console.log(entities);
-                console.log(GAS.getMapFromQuestion(entities));
-                if(answer == 'LackInfoPath'){
-                    builder.Prompts.text(session, 'Please complete your Path question~');
-                }else{
-                    session.send(answer);
-                }
-                break;
-        }
+        session.send(question);
+
+
+        // switch (intent){
+        //     case 'AskInfo':
+        //         var answer = GAS.getInfoAnswer('askwhat',entities,question,'lastentity','lastrelation');
+        //         session.send(answer)
+        //         break;
+        //     case 'AskLesson':
+        //         var answer = GAS.getLessonAnswer(entities);
+        //         if(answer == 'LackInfoLesson'){
+        //             builder.Prompts.text(session, 'Please complete your Lesson question~');
+        //         }else{
+        //             session.send(answer);
+        //         }
+        //         break;
+        //     case 'AskPath':
+        //         var answer = GAS.getPathAnswer(entities);
+        //         // console.log(entities);
+        //         console.log(GAS.getMapFromQuestion(entities));
+        //         if(answer == 'LackInfoPath'){
+        //             builder.Prompts.text(session, 'Please complete your Path question~');
+        //         }else{
+        //             session.send(answer);
+        //         }
+        //         break;
+        // }
+
+
         // if(answer=='lackInfo'){
         //     builder.Prompts.text(session, 'Please complete your question~');
         // } 
