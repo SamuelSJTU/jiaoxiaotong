@@ -39,7 +39,13 @@ bot.dialog('/', [
         var useId = session.message.user.id;
         // var answer = GAS.getLessonAnswer(question);
         // var intententities = GAS.getIntentAndEntities(question);
-        var res = sl.getRes(TypeApi,question);
+        try{
+            var res = sl.getRes(TypeApi,question);
+            session.send(res);
+        }catch(e){
+            session.send('TimeOut');
+        }
+        
         // var intent = intententities[0];
         // var entities = intententities[1];
         // if(question=='1'){
