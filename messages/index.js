@@ -15,7 +15,7 @@ var myutils = require('./myutils.js');
 var luis = require('./luis_api.js');
 var fileoptions = {flag:'a'};
 var cards = require('./cards.js');
-//var GAS = require('./getAnswerSync.js');
+var GAS = require('./getAnswerSync.js');
 //var useEmulator = (process.env.NODE_ENV == 'development');
 var useEmulator = false;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
@@ -31,7 +31,7 @@ bot.localePath(path.join(__dirname, './locale'));
 // 设置定时器，对每个conversionid加一个活跃度，每个一个小时加一，设置一个检查其活跃度的定时器，若10个小时不活跃，清除该用户上下午信息
 // 可以对id进行处理，比如添加一些头，从而设置不同活跃度权重，默认以socketid作为conversionid
 
-
+var us = require('urllib-sync');
 var userInfo = new Array();
 bot.dialog('/', [
     function (session) {
@@ -39,8 +39,8 @@ bot.dialog('/', [
         var useId = session.message.user.id;
         // var answer = GAS.getLessonAnswer(question);
         //var intententities = GAS.getIntentAndEntities(question);
-        //var intent = intententities[0];
-        //var entities = intententities[1];
+        var intent = intententities[0];
+        var entities = intententities[1];
         // if(question=='1'){
         //     var msg = cards.createCards["cardBus"](session); 
         //     session.send(msg);
@@ -60,31 +60,36 @@ bot.dialog('/', [
         session.send(question);
 
 
-        // switch (intent){
-        //     case 'AskInfo':
-        //         var answer = GAS.getInfoAnswer('askwhat',entities,question,'lastentity','lastrelation');
-        //         session.send(answer)
-        //         break;
-        //     case 'AskLesson':
-        //         var answer = GAS.getLessonAnswer(entities);
-        //         if(answer == 'LackInfoLesson'){
-        //             builder.Prompts.text(session, 'Please complete your Lesson question~');
-        //         }else{
-        //             session.send(answer);
-        //         }
-        //         break;
-        //     case 'AskPath':
-        //         var answer = GAS.getPathAnswer(entities);
-        //         // console.log(entities);
-        //         console.log(GAS.getMapFromQuestion(entities));
-        //         if(answer == 'LackInfoPath'){
-        //             builder.Prompts.text(session, 'Please complete your Path question~');
-        //         }else{
-        //             session.send(answer);
-        //         }
-        //         break;
-        // }
-
+        switch (intent){
+            case 'AskInfo':
+                var answer = GAS.getInfoAnswer('askwhat',entities,question,'lastentity','lastrelation');
+                session.send(answer)
+                break;
+            case 'AskLesson':
+                var lessonEntities = GAS.getLessonFromQuestion(entities)[0];
+                userInfo[userId]['lastQuesEntity'] = lessonEntities;
+                userInfo[userId]['waterFallStatus'] = 'askLessonHalf';
+                var answer = GAS.getLessonAnswer(entities);
+                if(answer == 'LackInfoLesson'){
+                    builder.Prompts.text(session, 'Please complete your Lesson question~');
+                }else{
+                    session.send(answer);
+                }
+                break;
+            case 'AskPath':
+                var answer = GAS.getPathAnswer(entities);
+                var pathEntities = GAS.getMapFromQuestion(entities);
+                userInfo[userId]['lastQuesEntity'] = pathEntities[0];
+                userInfo[userId]['waterFallStatus'] = 'askPathHalf';
+                if(answer == 'LackInfoPath'){
+                    builder.Prompts.text(session, 'Please complete your Path question~');
+                }else{
+                    session.send(answer);
+                }
+                break;
+        }
+        
+        userInfo[userId]['lastAnsEntity'] = answer;
 
         // if(answer=='lackInfo'){
         //     builder.Prompts.text(session, 'Please complete your question~');
@@ -99,9 +104,9 @@ bot.dialog('/', [
         // builder.Prompts.text(session, results.response);
         var question = session.message.text;
         var useId = session.message.user.id;
-        session.send('your question has been completed');
-        // session.send('the old question is '+userInfo[useId]);
-        session.send('the new question is '+question);
+        switch(userId[userId]['waterFallStatus']){
+            case 
+        }
     }
 ]);
 
