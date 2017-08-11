@@ -1,4 +1,4 @@
-/*-----------------------------------------------------------------------------
+﻿/*-----------------------------------------------------------------------------
 This template demonstrates how to use Waterfalls to collect input from a user using a sequence of steps.
 For a complete walkthrough of creating this type of bot see the article at
 https://aka.ms/abs-node-waterfall
@@ -38,9 +38,9 @@ bot.dialog('/', [
         var question = session.message.text;
         var useId = session.message.user.id;
         // var answer = GAS.getLessonAnswer(question);
-        var intententities = GAS.getIntentAndEntities(question);
-        var intent = intententities[0];
-        var entities = intententities[1];
+        //var intententities = GAS.getIntentAndEntities(question);
+        //var intent = intententities[0];
+        //var entities = intententities[1];
         // if(question=='1'){
         //     var msg = cards.createCards["cardBus"](session); 
         //     session.send(msg);
