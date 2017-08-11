@@ -1,6 +1,8 @@
-var userinfo = new Array();
-if(userinfo['userid']!=undefined) console.log(userinfo['userid']['answer']);
-else console.log(userinfo['userid']);
+var userinfo = new Object();
+userinfo['userid'] = new Array();
+userinfo['userid']['ans'] = 'ans';
+
+console.log(userinfo['userid']['ans']);
 
 
 // console.log('Hello');

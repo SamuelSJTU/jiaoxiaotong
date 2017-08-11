@@ -43,12 +43,11 @@ bot.dialog('/', [
         }else{
             session.send('last answer undefined');
         }
-        
-        
         ga.getAnswer(question,dataset,function(intent,start,end){
 
         },function(answer){
             session.send(answer);
+            userInfo[userId] = new Array();
             userInfo[userId]['answer'] = answer;
         });
 
