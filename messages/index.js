@@ -15,8 +15,6 @@ var myutils = require('./myutils.js');
 var luis = require('./luis_api.js');
 var fileoptions = {flag:'a'};
 var cards = require('./cards.js');
-var GAS = require('./getAnswerSync.js');
-var ga = require('getAnswerSync');
 //var useEmulator = (process.env.NODE_ENV == 'development');
 var useEmulator = false;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
@@ -37,7 +35,12 @@ var dataset = myio.readNewData();
 var userInfo = new Array();
 bot.dialog('/', [
     function (session) {
-        session.send('last answer'+userInfo[userId]['answer']);
+        if(userInfo[userId]!=undefined){
+            session.send('last answer'+userInfo[userId]['answer']);
+        }else{
+            session.send('last answer undefined');
+        }
+        
         var question = session.message.text;
         var useId = session.message.user.id;
         ga.getAnswer(question,dataset,function(intent,start,end){
