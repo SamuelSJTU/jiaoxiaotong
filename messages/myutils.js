@@ -12,12 +12,12 @@ module.exports = {
 		}
 		return res;
 	},
-	process:function(lastentity,qrelations,qentities,qdescriptions,intent,dataset){
+	process:function(lastentity,lastrelation,qrelations,qentities,qdescriptions,intent,dataset,originalquestion){
 		//使用函数时 qentities请按句子中的Index排序
 		// if(qentities.length==0) qentities.push([lastentity,-1,-1]);
 		//将上一次entity作为一个
 		if(lastentity!='') qentities.push([lastentity,-1,-1]);
-
+		if(lastrelation!='') qrelations.push([lastrelation,-1,-1]);
 		 
 		var answer;
 		if(intent == 'AskIf'){
@@ -34,18 +34,24 @@ module.exports = {
 				var kb = dataset[i];
 				//找到所有单描述的
 				var tags = kb.slice(3,kb.length);
-				if(qrelations.length==0){
-					if(qentities.indexOf(kb[0])!=-1 && qentities.indexOf(kb[2])!=-1 && this.isChildSet(puredes,tags)){
-						answer= true;
+				if(qentities.length==1){
+					if((qentities[0]==kb[0] || qentities[0]==kb[2]) && this.isChildSet(puredes,tags)){
+						answer = true;
 						break;
-					} 
+					}
 				}else{
-					if(qentities.indexOf(kb[0])!=-1 && qentities.indexOf(kb[2])!=-1 && this.isChildSet(puredes,tags) && qrelations.indexOf(kb[1])!=-1){
-						answer= true;
-						break;
-					} 
-				}
-				
+					if(qrelations.length==0){
+						if(qentities.indexOf(kb[0])!=-1 && qentities.indexOf(kb[2])!=-1 && this.isChildSet(puredes,tags)){
+							answer= true;
+							break;
+						} 
+					}else{
+						if(qentities.indexOf(kb[0])!=-1 && qentities.indexOf(kb[2])!=-1 && this.isChildSet(puredes,tags) && qrelations.indexOf(kb[1])!=-1){
+							answer= true;
+							break;
+						} 
+					}
+				}			
 			}
 
 			//第二种判别if的方法
@@ -56,9 +62,12 @@ module.exports = {
 			// 		answer=true;
 			// 	}
 			// }
-
+			if(originalquestion.indexOf('有')>=0) return answer ? '有' : '没有';
+			if(originalquestion.indexOf('对')>=0) return answer ? '对' : '不对';
 			return answer ? '是' : '不是';
-		}else{
+			
+
+		}else{   //对于AskWhat
 			answer = 'i dont know';
 			// console.log(answer);
 			var notDesRelations = [];
@@ -73,6 +82,7 @@ module.exports = {
 			}else{
 				singleBestPair = this.getOneLogicBestPair(this.disIndex(qentities),this.disIndex(qrelations),this.disIndex(qdescriptions),dataset);
 			}
+			console.log('singleBestPair= '+singleBestPair)
 			if(singleBestPair == undefined) return 'i dont know';
 			console.log('singlebest= '+singleBestPair);
 			//若存在复合逻辑
@@ -81,56 +91,65 @@ module.exports = {
 				return singleBestPair==undefined ? 'i dont know' : singleBestPair[0];
 			}else{
 				var answ1 = this.getOneLogicBestPair(this.disIndex(qentities),this.disIndex(qrelations),this.disIndex(qdescriptions),dataset);
-				if(answ1 != undefined && answ1[1]!=0){
-					var answ2 = this.getOneLogicBestPair([answ1[0]],this.disIndex(qrelations),this.disIndex(qdescriptions),dataset);
+				if(answ1 != undefined && answ1[1]!=-1){
+					var usedEntity = answ1[2];	console.log('usedEntity= '+usedEntity);
+					var usedRelation = answ1[3]; console.log('usedRelation= '+usedRelation);
+					var usedDescription = answ1[4]; console.log('usedDescription= '+usedDescription);
+					var usedAll = usedDescription; usedAll.push(usedEntity); usedAll.push(usedRelation);
+					console.log('usedAll= '+usedAll);
+					var qrelations = this.disIndex(qrelations);
+					qrelations = this.reomve12(usedAll,qrelations);
+					var qdescriptions = this.disIndex(qdescriptions); qdescriptions = this.reomve12(usedAll,qdescriptions);
+					console.log('double= '+qrelations);
+					var answ2 = this.getOneLogicBestPair([answ1[0]],qrelations,qdescriptions,dataset);
 					console.log('answ2: '+answ2);
-					if(answ2[1]!=-1) doubleBestPair = answ2;
+					if(answ2!=undefined && answ2[1]!=-1) doubleBestPair = answ2;
 				}
 			}
 			console.log('doublebest= '+doubleBestPair);
-			if(doubleBestPair.length == 0 || doubleBestPair[1]==-1){
+			if(doubleBestPair==undefined || doubleBestPair.length == 0 || doubleBestPair[1]==-1){
 				if(singleBestPair[1]==-1) return 'i dont know';
 				// console.log(singleBestPair);
 				else return singleBestPair[0];
 			}
-			else return doubleBestPair[0];
-
-
-
-			
-			
+			else return doubleBestPair[0];	
 		}
-		return answer;
 	},
 	getDescriptionScore:function(qdescriptions,tags){
 		var score=0;
+		var descriptions=[];
 		if(tags.indexOf('默认')>=0) score+=0.5;
 		for (i in qdescriptions){
-			if(tags.indexOf(qdescriptions[i])>=0) score+=1;
+			if(tags.indexOf(qdescriptions[i])>=0){
+				score+=1;
+				descriptions.push(qdescriptions[i]);
+			} 
 		}
-		return score;
+		return [score,descriptions];
 	},
 	getSingleTripleScore:function(qentity,qrelation,qdescriptions,dataset){
 		//若未找到 返回maxscore=0
 		var res = [];
 		var maxanswernum=0;
 		var maxscore=-1;
+		var argmaxdes=[];
 		for(var i in dataset){
 	        var kb = dataset[i];
 	        // console.log(kb);
 	        var tags = kb.slice(3,kb.length);
 	        if(qentity == kb[0] && qrelation == kb[1]){ //匹配到了起始entity与relationship相同的      		
-	        	var score = this.getDescriptionScore(qdescriptions,tags);
+	        	var score = this.getDescriptionScore(qdescriptions,tags)[0];
+	        	var descriptions = this.getDescriptionScore(qdescriptions,tags)[1];
 	            // console.log('该行知识得分: '+score);
 	            if(score>maxscore){
-	                maxscore = score; maxanswernum = i;
+	                maxscore = score; maxanswernum = i;argmaxdes=descriptions;
 	            }
 	        }
         }
-       	answer = dataset[maxanswernum][2];
+       	var answer = dataset[maxanswernum][2];
        	if(maxscore==-1){
        		res.push('i dont know');res.push(maxscore);
-       	}else res.push(answer);res.push(maxscore);
+       	}else res.push(answer);res.push(maxscore);res.push(qentity);res.push(qrelation);res.push(argmaxdes);
        	return res;
 	},
 	disIndex:function(array){
@@ -194,7 +213,7 @@ module.exports = {
 		return res;
 	},
 	saveFile:function(data,path){
-		data+='\r\n';
+		// data+='\r\n';
 		fs.appendFile(path,data,'utf8',function(err){  
 		    if(err)  
 		    {  
@@ -225,6 +244,13 @@ module.exports = {
 		}
 		if(tag) return res;
 		else return array;
+	},
+	reomve12:function(arr1,arr2){
+		var res = [];
+		for(var i in arr2){
+			if(arr1.indexOf(arr2[i])==-1) res.push(arr2[i]);
+		}
+		return res;
 	}	
 	
 }
