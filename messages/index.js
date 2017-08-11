@@ -15,6 +15,7 @@ var myutils = require('./myutils.js');
 var luis = require('./luis_api.js');
 var fileoptions = {flag:'a'};
 var cards = require('./cards.js');
+var myio = require('./myIO.js');
 //var useEmulator = (process.env.NODE_ENV == 'development');
 var useEmulator = false;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
