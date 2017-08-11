@@ -58,7 +58,7 @@ bot.dialog('/', [
         //     session.send(answer);
         // }
         // console.log(intent);
-        session.send(res[1]);
+        session.send(res);
 
 
         // switch (intent){

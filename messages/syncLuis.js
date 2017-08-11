@@ -16,7 +16,7 @@ module.exports = {
 		var res = request(Api+Encodequestion);
 		var buf = res.data;
 		var content = JSON.parse(buf.toString("utf-8",0,buf.length));
-		return [content,res.status]
+		return res.status
 	}
 }
  
