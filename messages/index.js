@@ -99,15 +99,15 @@ bot.dialog('/', [
         // }
 
         // saveUserInfo(useId,question);
-    },
-    function(session,results){
-        // builder.Prompts.text(session, results.response);
-        var question = session.message.text;
-        var useId = session.message.user.id;
-        switch(userId[userId]['waterFallStatus']){
-            case 
-        }
     }
+    // function(session,results){
+    //     // builder.Prompts.text(session, results.response);
+    //     var question = session.message.text;
+    //     var useId = session.message.user.id;
+    //     switch(userId[userId]['waterFallStatus']){
+    //         case 
+    //     }
+    // }
 ]);
 
 if (useEmulator) {
