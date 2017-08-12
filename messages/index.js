@@ -43,9 +43,54 @@ bot.dialog('/', [
         var question = session.message.text;
         var userId = session.message.user.id;
         if(userInfo[userId]==undefined) userInfo[userId] = new Array();
+        var question_temp = question.split("#");
+        if(question_temp.length>1){
+            if(question_temp[1]!='未知'){
+                userInfo[userId]['speakerName'] = question_temp[1];
+            }
+            question = question_temp[0];
+        }
+        var q_type = question.substring(0,4);
+        if(q_type=='card'){
+            for(var i=0;i<cards.cardsName.length;i++){
+                 if(cards.cardsName[i]=='cardBing') continue;
+                 var msg = cards.createCards[cards.cardsName[i]](session); 
+                 session.send(msg);
+            }
+            return;
+        }
+        if(q_type=='demo'){
+            QBH.askQnAMakerDemo(question,function(answers){
+                if(answers.length==0){
+                     QBH.askBing(question,function(webPages){
+                        var msg = cards.createCards["cardBing"](session,webPages); 
+                        session.send(msg);
+                     });
+                    return
+                }
+                var answer = answers[0].answer;
+                console.log(answer)
+                 if(cards.isCard(answer)){
+                        var msg = cards.createCards[answer](session); 
+                        session.send(msg);
+                 }else if(answer=='From:上海交通大学闵行校区李政道图书馆;To:上海交通大学闵行校区软件学院'){
+                    session.send(answer);
+                    session.send('软件学院与李政道图书馆距离较远，建议乘坐校车！');
+                 }else if(answer=='我不知道'){
+                     session.send(answer);
+                     QBH.askBing(question,function(webPages){
+                        var msg = cards.createCards["cardBing"](session,webPages); 
+                        session.send(msg);
+                     });
+                 }else{
+                     session.send(answer);
+                 }
+            });
+            return;
+        }
         if(ga.isHalfPhase(userInfo[userId]['PromptStatus'])){    //如果当前处于一半处问答
             var qentitiesold = userInfo[userId]['LastEntities'];
-			var qrelation = userInfo[userId]['LastRelation'];
+            var qrelation = userInfo[userId]['LastRelation'];
             var PromptStatus = userInfo[userId]['PromptStatus'];
             ga.getHalfAnswer(question,qentitiesold,qrelation,PromptStatus,
             function(answer){
@@ -79,10 +124,10 @@ bot.dialog('/', [
                         var msg = cards.createCards[answer](session);  // 返回card生成的msg
                         session.send(msg);
                     }else if(answer == 'i dont know'){
-                        QBH.askBing(question,function(ans){
-                            session.send(ans);
-                            console.log('bing',ans);
-                        });                    
+                        QBH.askBing(question,function(webPages){
+                            var msg = cards.createCards["cardBing"](session,webPages); 
+                            session.send(msg);
+                        });                  
                     }else{
                         session.send(answer);
                     }

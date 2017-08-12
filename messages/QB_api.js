@@ -45,7 +45,7 @@ function askBing(query,callback)
              var jdata = JSON.parse(data);
              var webPages = jdata.webPages.value;
              var ans = webPages[0].snippet;
-             callback(ans);
+             callback(webPages);
 
 
         });
@@ -55,7 +55,7 @@ function askBing(query,callback)
     request.end(); // 关闭请求
 }
 
-var query = "交大校长是谁？";
+// var query = "交大校长是谁？";
 // askBing(query,function(data){
 //     //console.log(data.webPages.value);  // 网页搜索
 //     var webPages = data.webPages.value;
@@ -103,9 +103,36 @@ askQnAMaker=function(question,callback){
     );
 }
 
+askQnAMakerDemo=function(question,callback){
+    var requestBody = {
+        'question': question,
+        'top':1  // 返回的长度
+    };    
+    var requestData = {
+        url: "https://westus.api.cognitive.microsoft.com/qnamaker/v2.0/knowledgebases/b6f8e022-fbf8-487f-8763-685ff6963911/generateAnswer",
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            "Ocp-Apim-Subscription-Key": "84ba2e0f445747d6baa1b1cc3c6118fc" 
+        },
+        body: JSON.stringify(requestBody)
+    };
+    request.post(requestData, function (error, response, body) {
+            if (error) {
+                console.log(error);
+            } else if (response.statusCode !== 200) {
+                console.log(body);
+            } else {
+               callback(JSON.parse(body).answers);
+                // console.log(body);
+            }
+        }
+    );
+}
+
 
 module.exports.askQnAMaker = askQnAMaker;
 module.exports.askBing = askBing;
-
+module.exports.askQnAMakerDemo = askQnAMakerDemo;
 var question = "你好困";
 
