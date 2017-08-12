@@ -4,6 +4,10 @@ var createCards = new Object();
 
 //var cardsName = ["cardShuttle","cardBus","cardAnthem","cardLibrary","cardCanteen"]
 var cardsName = ["cardShuttle","cardAnthem","cardLibrary"]
+isCard = function(str){
+    if(cardsName.indexOf(str)!=-1) return true;
+    else return false;
+}
 createCards["cardShuttle"] = function(session){
     var card =  new builder.HeroCard(session)
     .title('校车')
@@ -154,7 +158,7 @@ createCards["cardCanteen"] = function(session){
 
 module.exports.createCards = createCards;
 module.exports.cardsName = cardsName;
-
+module.exports.isCard = isCard;
 /**
  * 使用样例
  * 根据名字发送对应card的信息

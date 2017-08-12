@@ -2,13 +2,26 @@ var lessonEntities = ['课程课程名','课程教师'];
 //var myio = require('./myIO.js');
 var myu2 = require('./myutils2.js');
 var myu = require('./myutils.js');
-sy = require("./syncLuis.js");
+//sy = require("./syncLuis.js");
 //var question  = "人与室内环境连之伟教室在哪";
 var relationSet = ['职位','其他关系','学科','院长','校长','主任','党委职位'];
 //var dataset = myio.readNewData();
 // console.log('answer',answer);
 
 module.exports = {
+	getMapFormat:function(start,end){
+		var res = '';
+		res+='From:';
+		res+=start;
+		res+=';';
+		res+='To:';
+		res+=end;
+		return res;
+	},
+	getPlaceAnswer:function(entities){
+		if(entities.length<2) return 'LackInfoPath';
+		else return this.getMapFormat(entities[0],entities[1]);
+	},
 	getLessonFromQuestion:function(entities){
 		qentities = new Array();
 		qrelations = new Array();
@@ -48,7 +61,8 @@ module.exports = {
 		// var res = sy.getIntentLuis(question);
 		// var entities = res[0].entities;
 		var placeentities = this.getMapFromQuestion(entities);
-		var ans = myu2.getPlaceAnswer(placeentities);
+		console.log(placeentities);
+		var ans = this.getPlaceAnswer(placeentities);
 		return ans;
 	},
 	getIntentAndEntities:function(question){

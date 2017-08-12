@@ -12,12 +12,15 @@ var path = require('path');
 var TypeApi = 'https://southeastasia.api.cognitive.microsoft.com/luis/v2.0/apps/0b51b9e7-2200-40c5-9a7d-d644b430364e?subscription-key=fc7f3816353045959d517198742e11e3&timezoneOffset=0&verbose=true&q=';
 var fs = require('fs');
 var myutils = require('./myutils.js');
+var myutils2 = require('./myutils2.js');
 var luis = require('./luis_api.js');
 var fileoptions = {flag:'a'};
 var cards = require('./cards.js');
 var myio = require('./myIO.js');
+var GAS = require('./getAnswerSync');
+var QBH = require('./QB_api.js');
 //var useEmulator = (process.env.NODE_ENV == 'development');
-var useEmulator = false;
+var useEmulator = true;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],
@@ -34,80 +37,77 @@ bot.localePath(path.join(__dirname, './locale'));
 //var sl = require("./syncLuis.js");
 var dataset = myio.readNewData();
 var userInfo = new Array();
+var ga = require("./getAnswer.js");
 bot.dialog('/', [
     function (session) {
-        if(userInfo[userId]==undefined) userInfo['userId'] = new Array();
         var question = session.message.text;
-        var useId = session.message.user.id;
-        if(unserInfo[userId]['PromptStatus']=='LessonHalf'){
+        var userId = session.message.user.id;
+        if(userInfo[userId]==undefined) userInfo[userId] = new Array();
+        if(ga.isHalfPhase(userInfo[userId]['PromptStatus'])){    //如果当前处于一半处问答
+            var qentitiesold = userInfo[userId]['LastEntities'];
+			var qrelation = userInfo[userId]['LastRelation'];
+            var PromptStatus = userInfo[userId]['PromptStatus'];
+            ga.getHalfAnswer(question,qentitiesold,qrelation,PromptStatus,
+            function(answer){
+                //问课程的回掉
+                session.send(answer)
+            },
+            function(answer){
+                //问路程的回掉
+                session.send(answer)
+            });
 
-            unserInfo[userId]['PromptStatus']=='Complete';
-        }else if(unserInfo[userId]['PromptStatus']=='PathHalf'){
-            unserInfo[userId]['PromptStatus']=='Complete';
+            userInfo[userId]['PromptStatus'] = 'Complete';
+            userInfo[userId]['LastRelation'] = '';
+            userInfo[userId]['LastEntities'] = '';
+
         }else{
              ga.getAnswer(question,dataset,
-                function(intent,start,end){
+                function(answer,qentities){
+                    if(answer == 'LackInfoPath'){
 
+                        userInfo[userId]['PromptStatus'] = 'PathHalf';
+                        userInfo[userId]['LastEntities'] = qentities;
+                        session.send('please complete your Path info~');
+                    }else{
+                         session.send(answer);
+                    }
+                },
+                function(answer,qentities){
+                    // var answer = "cardShuttle";
+                    if(cards.isCard(answer)){
+                        var msg = cards.createCards[answer](session);  // 返回card生成的msg
+                        session.send(msg);
+                    }else if(answer == 'i dont know'){
+                        QBH.askBing(question,function(ans){
+                            session.send(ans);
+                            console.log('bing',ans);
+                        });                    
+                    }else{
+                        session.send(answer);
+                    }
+                    // userInfo[userId]['LastAnswer'] = answer;
+                    // userInfo[userId]['PromptStatus'] = 'LessonHalf';
+                    // userInfo[userId]['LastEntities'] = qentities;
+                },
+                function(answer,qentities,qrelation){
+                    //AskLessonCallBack
+                    console.log(answer,qentities,qrelation);
+                    if(answer == 'LackInfoLesson'){
+                        userInfo[userId]['PromptStatus'] = 'LessonHalf';
+                        userInfo[userId]['LastEntities'] = qentities;
+                        userInfo[userId]['LastRelation'] = qrelation;
+                        session.send('please complete your lesson info~');
+                    }else{
+                        session.send(answer);
+                    }
                 },
                 function(answer){
                     session.send(answer);
-                    
-                    userInfo[userId]['answer'] = answer;
-                    if(answer == 'lackInfoLesson'){
-                        userInfo['userId']['PromptStatus'] = 'LessonHalf';
-                },
-                function(answer){
-
-                },
-                function(answer){
-                    unserInfo[userId]['PromptStatus']=='AskScheulQuater';
                 }
             );
         }
        
-
-        
-
-
-        // switch (intent){
-        //     case 'AskInfo':
-        //         var answer = GAS.getInfoAnswer('askwhat',entities,question,'lastentity','lastrelation');
-        //         session.send(answer)
-        //         break;
-        //     case 'AskLesson':
-        //         var lessonEntities = GAS.getLessonFromQuestion(entities)[0];
-        //         userInfo[userId]['lastQuesEntity'] = lessonEntities;
-        //         userInfo[userId]['waterFallStatus'] = 'askLessonHalf';
-        //         var answer = GAS.getLessonAnswer(entities);
-        //         if(answer == 'LackInfoLesson'){
-        //             builder.Prompts.text(session, 'Please complete your Lesson question~');
-        //         }else{
-        //             session.send(answer);
-        //         }
-        //         break;
-        //     case 'AskPath':
-        //         var answer = GAS.getPathAnswer(entities);
-        //         var pathEntities = GAS.getMapFromQuestion(entities);
-        //         userInfo[userId]['lastQuesEntity'] = pathEntities[0];
-        //         userInfo[userId]['waterFallStatus'] = 'askPathHalf';
-        //         if(answer == 'LackInfoPath'){
-        //             builder.Prompts.text(session, 'Please complete your Path question~');
-        //         }else{
-        //             session.send(answer);
-        //         }
-        //         break;
-        // }
-        
-        // userInfo[userId]['lastAnsEntity'] = answer;
-
-        // if(answer=='lackInfo'){
-        //     builder.Prompts.text(session, 'Please complete your question~');
-        // } 
-        // else{
-        //     session.send('the answer is: '+answer);
-        // }
-
-        // saveUserInfo(useId,question);
     }
 ]);
 

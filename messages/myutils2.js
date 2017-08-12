@@ -26,19 +26,6 @@ module.exports = {
 			}
 		}
 		return 'i dont know';
-	},
-	getMapFormat:function(start,end){
-		var res = '';
-		res+='From:';
-		res+=start;
-		res+=';';
-		res+='To:';
-		res+=end;
-		return res;
-	},
-	getPlaceAnswer:function(entities){
-		if(entities.length<2) return 'LackInfoPath';
-		else return this.getMapFormat(entities[0],entities[1]);
 	}
 
 
