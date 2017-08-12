@@ -61,14 +61,15 @@ bot.dialog('/', [
         }
         if(q_type=='demo'){
             QBH.askQnAMakerDemo(question,function(answers){
-                if(answers.length==0){
+                var answer = answers[0].answer;
+                if(answer=='No good match found in the KB')
+                {
                      QBH.askBing(question,function(webPages){
                         var msg = cards.createCards["cardBing"](session,webPages); 
                         session.send(msg);
                      });
                     return
                 }
-                var answer = answers[0].answer;
                 console.log(answer)
                  if(cards.isCard(answer)){
                         var msg = cards.createCards[answer](session); 
