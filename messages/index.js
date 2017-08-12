@@ -44,12 +44,13 @@ bot.dialog('/', [
         var userId = session.message.user.id;
         if(userInfo[userId]==undefined) userInfo[userId] = new Array();
         var question_temp = question.split("#");
+        userInfo[userId]['speakerName']='未知';
         if(question_temp.length>1){
             if(question_temp[1]!='未知'){
                 userInfo[userId]['speakerName'] = question_temp[1];
             }
-            question = question_temp[0];
         }
+        question = question_temp[0];
         var q_type = question.substring(0,4);
         if(q_type=='card'){
             for(var i=0;i<cards.cardsName.length;i++){
