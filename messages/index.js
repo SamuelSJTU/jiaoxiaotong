@@ -61,8 +61,8 @@ bot.dialog('/', [
             QBH.askQnAMakerDemo(question,function(answers){
 
                 var answer = answers[0].answer;
-                if(userInfo['speakerName']!='未知'){
-                    answer = answer.replace('[人名]',userInfo['speakerName']);
+                if(userInfo[userId]['speakerName']!='未知'){
+                    answer = answer.replace('[人名]',userInfo[userId]['speakerName']);
                 }else{
                     answer = answer.replace('[人名]','');
                 }
