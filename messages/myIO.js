@@ -45,8 +45,8 @@ module.exports = {
 		//console.log(datas);
 		return data;
 	},
-	write:function(path,data){
-		rf.writeFile(path,data,function(err){
+	write:function(data){
+		rf.writeFile(path.join(__dirname, './log.txt'),data+'\n',function(err){
 			if(err) console.log(path+'\t'+'Writing Fail...')
 			else console.log(path+'\t'+'Writing Success...')
 		})
@@ -63,6 +63,35 @@ module.exports = {
 			}
 		}
 		return datas;
+	},
+	readExamData:function(){
+		var data = rf.readFileSync(path.join(__dirname, './testExamData.txt'),"utf-8");
+		var datas = data.split("\r\n");
+		for(var i in datas){
+			datas[i] = datas[i].split('\t\t');
+			for(var j in data){
+				if(j==0){
+					datas[i][j] = datas[i][j].split('\t');
+				}
+			}
+		}
+		return datas;
+	},
+	readCanlendarData:function(){
+		var data = rf.readFileSync(path.join(__dirname, './testcanData.txt'),"utf-8");
+		var datas = data.split("\r\n");
+		for(var i in datas){
+			datas[i] = datas[i].split("\t");
+		}
+		return datas;
+	},
+	addCalendarData:function(data){
+		rf.appendFile(path.join(__dirname, './testcanData.txt'),data,'utf8',function(err){  
+		    if(err)  
+		    {  
+		        console.log(err);  
+		    }  
+		});
 	}
 	
 }

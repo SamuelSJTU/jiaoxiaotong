@@ -19,8 +19,8 @@ var cards = require('./cards.js');
 var myio = require('./myIO.js');
 var GAS = require('./getAnswerSync');
 var QBH = require('./QB_api.js');
-var useEmulator = (process.env.NODE_ENV == 'development');
-// var useEmulator = true;
+//var useEmulator = (process.env.NODE_ENV == 'development');
+var useEmulator = true;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],
@@ -40,8 +40,9 @@ var userInfo = new Array();
 var ga = require("./getAnswer.js");
 bot.dialog('/', [
     function (session) {
-        var question = session.message.text;
         var userId = session.message.user.id;
+        var question = session.message.text;
+        myio.write(question);
         if(userInfo[userId]==undefined) userInfo[userId] = new Array();
         var question_temp = question.split("#");
         userInfo[userId]['speakerName']='未知';
@@ -51,16 +52,12 @@ bot.dialog('/', [
             }
         }
         question = question_temp[0];
+
         var q_type = question.substring(0,4);
-        if(q_type=='card'){
-            for(var i=0;i<cards.cardsName.length;i++){
-                 if(cards.cardsName[i]=='cardBing') continue;
-                 var msg = cards.createCards[cards.cardsName[i]](session); 
-                 session.send(msg);
-            }
-            return;
-        }
+        
+        // 仅仅用于测试
         if(q_type=='demo'){
+            question = question.substring(4,question.length);
             QBH.askQnAMakerDemo(question,function(answers){
                 var answer = answers[0].answer;
                 if(answer=='No good match found in the KB')
@@ -90,9 +87,13 @@ bot.dialog('/', [
             });
             return;
         }
+
+
+
+
         if(ga.isHalfPhase(userInfo[userId]['PromptStatus'])){    //如果当前处于一半处问答
             var qentitiesold = userInfo[userId]['LastEntities'];
-            var qrelation = userInfo[userId]['LastRelation'];
+			var qrelation = userInfo[userId]['LastRelation'];
             var PromptStatus = userInfo[userId]['PromptStatus'];
             ga.getHalfAnswer(question,qentitiesold,qrelation,PromptStatus,
             function(answer){
@@ -100,17 +101,41 @@ bot.dialog('/', [
                 session.send(answer)
             },
             function(answer){
+                //问考试的回掉
+                session.send(answer)
+            },
+            function(answer){
                 //问路程的回掉
                 session.send(answer)
-            });
-
+            },
+            function(username){
+                //Login的回调
+                userInfo[userId]['PromptStatus'] = 'RegisterHalf';
+                userInfo[userId]['Login'] = username;
+                console.log('userName',username);
+                session.send('Please input your pwd');
+            },
+            function(){
+                //Register的回调
+                session.send('你好: '+userInfo[userId]['Login']);
+                userInfo[userId]['PromptStatus'] = 'Complete';
+                // session.send('Your User Name is '+userInfo[userId]['Login']);
+                if(userInfo[userId]['LastIntent']=='SearchCalendar'){
+                    var res = GAS.getCalendarData(userInfo[userId]['LastTimes'],userInfo[userId]['Login']);
+                    session.send(res);
+                }else if(userInfo[userId]['LastIntent'] == 'AddCalendar'){
+                    GAS.addCalendarData(userInfo[userId]['LastTimes'],userInfo[userId]['Login'],userInfo[userId]['CalContent']);
+                    session.send('Add Calendar Success');
+                }
+            }
+            );
             userInfo[userId]['PromptStatus'] = 'Complete';
             userInfo[userId]['LastRelation'] = '';
             userInfo[userId]['LastEntities'] = '';
-
         }else{
-             ga.getAnswer(question,dataset,
+             ga.getAnswer(question,userInfo[userId]['LastQuestionEntity'],userInfo[userId]['LastEntity'],userInfo[userId]['LastRelation'],dataset,
                 function(answer,qentities){
+                    //问Path的回掉
                     if(answer == 'LackInfoPath'){
 
                         userInfo[userId]['PromptStatus'] = 'PathHalf';
@@ -122,20 +147,19 @@ bot.dialog('/', [
                 },
                 function(answer,qentities){
                     // var answer = "cardShuttle";
+                    
                     if(cards.isCard(answer)){
                         var msg = cards.createCards[answer](session);  // 返回card生成的msg
                         session.send(msg);
                     }else if(answer == 'i dont know'){
-                        QBH.askBing(question,function(webPages){
-                            var msg = cards.createCards["cardBing"](session,webPages); 
-                            session.send(msg);
-                        });                  
+                        QBH.askBing(question,function(ans){
+                            session.send(ans);
+                            console.log('bing',ans);
+                        });                    
                     }else{
                         session.send(answer);
                     }
-                    // userInfo[userId]['LastAnswer'] = answer;
-                    // userInfo[userId]['PromptStatus'] = 'LessonHalf';
-                    // userInfo[userId]['LastEntities'] = qentities;
+                    userInfo[userId]['LastQuestionEntity'] = answer;
                 },
                 function(answer,qentities,qrelation){
                     //AskLessonCallBack
@@ -149,8 +173,70 @@ bot.dialog('/', [
                         session.send(answer);
                     }
                 },
+                 function(answer,qentities,qrelation){
+                    //AskExamCallBack
+                    console.log(answer,qentities,qrelation);
+                    console.log('exam');
+                    if(answer == 'LackInfoExam'){
+                        userInfo[userId]['PromptStatus'] = 'ExamHalf';
+                        userInfo[userId]['LastEntities'] = qentities;
+                        userInfo[userId]['LastRelation'] = qrelation;
+                        session.send('please complete your exam info~');
+                    }else{
+                        session.send(answer);
+                    }
+                },
                 function(answer){
-                    session.send(answer);
+                    //AskQnaMaker                
+                    if(answer=='No good match found in the KB')
+                    {
+                        QBH.askBing(question,function(res){
+                            // var msg = cards.createCards["cardBing"](session,webPages); 
+                            session.send(res);
+                        });
+                        return
+                    }else{
+                        session.send(answer);
+                    }
+
+
+
+                },
+                function(){
+                    //Login
+                    userInfo[userId]['PromptStatus'] = 'LoginHalf';
+                    session.send('Please input your user name');
+                },
+                function(times){
+                    //SearchCalen
+                    if(userInfo[userId]['Login'] == undefined){
+                        session.send('please Login First And Input your username');
+                        userInfo[userId]['PromptStatus'] = 'LoginHalf';
+                        userInfo[userId]['LastIntent'] = 'SearchCalendar';
+                    }else{
+                        var res = GAS.getCalendarData(times,userInfo[userId]['Login']);
+                        userInfo[userId]['LastTimes'] = times;
+                        session.send(res);
+                    }
+                },
+                function(times,content){
+                    //AddCalen
+                    if(userInfo[userId]['Login'] == undefined){
+                        session.send('please Login First And Input your username');
+                        userInfo[userId]['PromptStatus'] = 'LoginHalf';
+                        userInfo[userId]['LastIntent'] = 'AddCalendar';
+                        userInfo[userId]['CalContent'] = content;
+                        userInfo[userId]['LastTimes'] = times;
+                        console.log(times);
+                    }else{
+                        GAS.addCalendarData(times,userInfo[userId]['Login'],content);
+                        session.send('Add Calendar Success');
+                    }
+                    
+                },
+                function(ans){
+                    //BingCallBack
+                    session.send('I cant find your Intent, The res from Bing: '+ans);
                 }
             );
         }

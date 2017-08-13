@@ -45,7 +45,7 @@ function askBing(query,callback)
              var jdata = JSON.parse(data);
              var webPages = jdata.webPages.value;
              var ans = webPages[0].snippet;
-             callback(webPages);
+             callback(ans);
 
 
         });
@@ -55,7 +55,7 @@ function askBing(query,callback)
     request.end(); // 关闭请求
 }
 
-// var query = "交大校长是谁？";
+var query = "交大校长是谁？";
 // askBing(query,function(data){
 //     //console.log(data.webPages.value);  // 网页搜索
 //     var webPages = data.webPages.value;
@@ -131,8 +131,11 @@ askQnAMakerDemo=function(question,callback){
 }
 
 
+
+
 module.exports.askQnAMaker = askQnAMaker;
 module.exports.askBing = askBing;
 module.exports.askQnAMakerDemo = askQnAMakerDemo;
+
 var question = "你好困";
 

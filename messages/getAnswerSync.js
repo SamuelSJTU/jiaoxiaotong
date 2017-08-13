@@ -1,5 +1,6 @@
 var lessonEntities = ['课程课程名','课程教师'];
-//var myio = require('./myIO.js');
+var examEntities = ['考试课程名','考试教师'];
+var myio = require('./myIO.js');
 var myu2 = require('./myutils2.js');
 var myu = require('./myutils.js');
 //sy = require("./syncLuis.js");
@@ -22,7 +23,7 @@ module.exports = {
 		if(entities.length<2) return 'LackInfoPath';
 		else return this.getMapFormat(entities[0],entities[1]);
 	},
-	getLessonFromQuestion:function(entities){
+	getLessonEntity:function(entities){
 		qentities = new Array();
 		qrelations = new Array();
 		for(var i in entities){
@@ -37,6 +38,24 @@ module.exports = {
 		}
 		return [qentities,qrelations];
 	},
+	getExamEntity:function(entities){
+		qentities = new Array();
+		qrelations = new Array();
+		for(var i in entities){
+			var entity = entities[i];
+			// console.log(entity);
+			var val = entity['resolution']['values'][0];
+			var si = entity.startIndex;var ei = entity.endIndex;
+			if(entities[i].type == '考试关系') qrelations.push(val);
+			else if(examEntities.indexOf(entity.type)!=-1){
+				// console.log(entity.type)
+				qentities.push([val,si,ei]);
+			} 
+		}
+		qentities = myu.removeSmallEntity(qentities,qentities);
+		qentities = myu.disIndex(qentities);
+		return [qentities,qrelations];
+	},
 	getMapFromQuestion:function(entities){
 		placeentities = new Array();
 		for(var i in entities){
@@ -48,13 +67,17 @@ module.exports = {
 		return placeentities;
 	},
 	getLessonAnswer:function(entities){
-		// var res = sy.getIntentLuis(question);
-		// var entities = res[0].entities;
-		// console.log('status: '+res[1]);
-		var qentities = this.getLessonFromQuestion(entities)[0];
-		var qrelations = this.getLessonFromQuestion(entities)[1][0];
+		var qentities = this.getLessonEntity(entities)[0];
+		var qrelations = this.getLessonEntity(entities)[1][0];
 		console.log(qentities);console.log(qrelations);
 		var answer = myu2.getAnswerLesson(qentities,qrelations);
+		return answer;
+	},
+	getExamAnswer:function(entities){
+		var qentities = this.getExamEntity(entities)[0];
+		var qrelations = this.getExamEntity(entities)[1][0];
+		console.log(qentities);console.log(qrelations);
+		var answer = myu2.getAnswerExam(qentities,qrelations);
 		return answer;
 	},
 	getPathAnswer:function(entities){
@@ -100,5 +123,35 @@ module.exports = {
 		var qdescriptions = questionTriple[2];
 		var answer = myu.process(lastentity,lastrelation,qrelations,qentities,qdescriptions,intentType,dataset,originalQues);
 		return answer;
+	},
+	getCalendarData:function (time,userName){
+		var dataset = myio.readCanlendarData();
+		var res = "";
+		if(time == ""){
+			for(var i in dataset){
+				if(dataset[i][0]==userName){
+					res+=dataset[i][2];
+					res+=": ";
+					res+=dataset[i][3];
+					res+=" ";
+				}
+			}
+		}else{
+			for(var i in dataset){
+				if(dataset[i][0]==userName && dataset[i][1]==time){
+					res+=dataset[i][2];
+					res+=": ";
+					res+=dataset[i][3];
+					res+=" ";
+				}
+			}
+		}
+		res = res=="" ? 'schedual not found' : res;
+		return res;
+	},
+	addCalendarData:function(time,userName,content){
+		// var time = times.length == 0 ? "" : times[0];
+		var data = userName+"\t"+"pwd"+"\t"+time+"\t"+content+"\r\n";
+		myio.addCalendarData(data);
 	}
 }

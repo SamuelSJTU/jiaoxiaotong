@@ -1,27 +1,45 @@
-// var question = session.message.text;
-// var useId = session.message.user.id;
-var ga = require("./getAnswer.js");
-var myio = require("./myIO.js");
-var question = "机器学习的老师是谁";
-var userId = '123';
-var userInfo = new Array();
-var dataset = myio.readNewData();
-if(userInfo[userId]!=undefined){
-    console.log('last answer'+userInfo[userId]['answer']);
-}
-else{
-    console.log('last answer undefined');
-}
-ga.getAnswer(question,dataset,function(intent,start,end){
+// function getTime(entities){
+// 	var times = new Array();
+// 	for(var i in entities){
+// 		var entity = entities[i];
+// 		var val = entity['resolution']['values'] != undefined ? entity['resolution']['values'][0]: "";
+// 		if(entity.type == 'builtin.datetimeV2.datetime') times.push(val); 
+// 	}
+// 	return times;
+// }
 
-        },function(answer){
-            console.log(answer);
-            userInfo[userId] = new Array();
-            userInfo[userId]['answer'] = answer;
-        },function(answer){
-        	console.log('LessonAnswer',answer);
-        	userInfo[userId] = new Array();
-        	userInfo[userId]['answer'] = answer;
-		});
 
-// setTimeout(function(){console.log('byInterval',userInfo[userId]['answer'])},5000);
+// var la = require("./luis_api.js");
+// la.askLuisIntent('计量经济学考试地点',function(data){
+//     var entities = data.entities;
+
+//     console.log(entities);
+//     // console.log(getTime(entities));
+// });
+// var myio = require("./myIO");
+// function getCalendarData(time,userName){
+// 		var dataset = myio.readCanlendarData();
+// 		var res = "";
+// 		if(time == ""){
+// 			for(var i in dataset){
+// 				if(dataset[i][0]==userName){
+// 					res+=dataset[i][3];
+// 				}
+// 			}
+// 		}else{
+// 			for(var i in dataset){
+// 				if(dataset[i][0]==userName && dataset[i][1]==time){
+// 					res+=dataset[i][3];
+// 				}
+// 			}
+// 		}
+// 		res = res=="" ? 'schedual not found' : res;
+// 		return res;
+// 	}
+
+// console.log(getCalendarData("","xxx"));
+// var mu = require("./myutils");
+// var arr1 = [['xx','1',3],['yy',1,2]]
+// console.log(mu.removeSmallEntity(arr1,arr1));
+var Q = "123456";
+console.log(Q.substring(3,Q.length))
