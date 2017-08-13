@@ -50,7 +50,7 @@ function getRestTime(entities,Question){
 	var startIndex=0;var endIndex=0;
 	for(var i in entities){
 		var entity = entities[i];
-		var val = entity['resolution']['values'];
+		var val = entity['resolution']['values'] != undefined ? entity['resolution']['values'][0]['value']: "";
 		if(entity.type == 'builtin.datetimeV2.datetime'){
 			startIndex = entity.startIndex;
 			endIndex = entity.endIndex;
