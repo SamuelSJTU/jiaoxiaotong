@@ -41,5 +41,9 @@
 // var mu = require("./myutils");
 // var arr1 = [['xx','1',3],['yy',1,2]]
 // console.log(mu.removeSmallEntity(arr1,arr1));
-var Q = "123456";
-console.log(Q.substring(3,Q.length))
+// var Q = "123456";
+// console.log(Q.substring(3,Q.length))
+var str = 'aaabbbcccaaabbbccc';   
+　　var reg = 'aaa';   
+　　var res = str.replace(reg, '111');
+console.log(res); 

@@ -59,7 +59,15 @@ bot.dialog('/', [
         if(q_type=='demo'){
             question = question.substring(4,question.length);
             QBH.askQnAMakerDemo(question,function(answers){
+
                 var answer = answers[0].answer;
+                if(userInfo['speakerName']!='未知'){
+                    answer = answer.replace('[人名]',userInfo['speakerName']);
+                }else{
+                    answer = answer.replace('[人名]','');
+                }
+
+
                 if(answer=='No good match found in the KB')
                 {
                      QBH.askBing(question,function(webPages){
