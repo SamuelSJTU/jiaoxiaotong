@@ -48,7 +48,7 @@ bot.dialog('/', [
         var userId = session.message.user.id;
         var question = session.message.text;
         if(question.indexOf('食堂')!=-1){
-            var msg = cards.createCards["cardCanteen"](session,webPages); 
+            var msg = cards.createCards["cardCanteen"](session); 
             session.send(msg);
             return;
         }
