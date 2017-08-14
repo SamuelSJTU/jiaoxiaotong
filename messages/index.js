@@ -12,15 +12,20 @@ var path = require('path');
 var TypeApi = 'https://southeastasia.api.cognitive.microsoft.com/luis/v2.0/apps/0b51b9e7-2200-40c5-9a7d-d644b430364e?subscription-key=fc7f3816353045959d517198742e11e3&timezoneOffset=0&verbose=true&q=';
 var fs = require('fs');
 var myutils = require('./myutils.js');
+
 var myutils2 = require('./myutils2.js');
+console.log('begin');
 var luis = require('./luis_api.js');
 var fileoptions = {flag:'a'};
 var cards = require('./cards.js');
+
 var myio = require('./myIO.js');
+
 var GAS = require('./getAnswerSync');
 var QBH = require('./QB_api.js');
+
 //var useEmulator = (process.env.NODE_ENV == 'development');
-var useEmulator = false;
+var useEmulator = true;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],
@@ -52,9 +57,7 @@ bot.dialog('/', [
             }
         }
         question = question_temp[0];
-
         var q_type = question.substring(0,4);
-        
         // 仅仅用于测试
         if(q_type=='demo'){
             question = question.substring(4,question.length);
@@ -206,9 +209,6 @@ bot.dialog('/', [
                     }else{
                         session.send(answer);
                     }
-
-
-
                 },
                 function(){
                     //Login

@@ -176,7 +176,6 @@ module.exports = {
 				case 'OrderMeetingroom':
 					callbackOrderMeetRoom('预约成功');
 					break;
-
 				default:
 					//if intent is None
 					QBH.askBing(Question,function(ans){

@@ -2,6 +2,9 @@ var myio = require('./myIO.js');
 var lessondata = myio.readLessonData();
 var mapdata = myio.readPlace();
 var examdata = myio.readExamData();
+
+
+
 function isEntityFind(data,entities,relation){
 	datarelation = data[1];
 	datae1 = data[0][0];
@@ -9,6 +12,7 @@ function isEntityFind(data,entities,relation){
 	if((entities[0]==datae1 && entities[1]==datae2 && relation==datarelation) || (entities[0]==datae2 && entities[1]==datae1 && relation==datarelation)) return true;
 	else return false;
 }
+
 
 
 module.exports = {
