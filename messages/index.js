@@ -25,7 +25,7 @@ var GAS = require('./getAnswerSync');
 var QBH = require('./QB_api.js');
 
 //var useEmulator = (process.env.NODE_ENV == 'development');
-var useEmulator = true;
+var useEmulator = false;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],
@@ -98,7 +98,6 @@ bot.dialog('/', [
             });
             return;
         }
-
 
 
 
