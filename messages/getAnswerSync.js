@@ -130,8 +130,8 @@ module.exports = {
 		if(time == ""){
 			for(var i in dataset){
 				if(dataset[i][0]==userName){
-					// res+=dataset[i][2];
-					// res+=": ";
+					res+=dataset[i][2];
+					res+=" ";
 					res+=dataset[i][3];
 					res+=" ";
 				}
