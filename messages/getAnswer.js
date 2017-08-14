@@ -102,7 +102,7 @@ module.exports = {
 		}
 		return '';
 	},
-	getAnswer:function(Question,lastanswerentity,lastentity,lastrelation,dataset,callbackMap,callbackAnswer,callbackLesson,callbackExam,callbackQNA,callbackLogin,callbackLsch,callbackAsch,callbackSearchMeetRoom,callbackOrderMeetRoom,callbackBing){
+	getAnswer:function(Question,lastanswerentity,lastentity,lastrelation,dataset,callbackMap,callbackAnswer,callbackLesson,callbackExam,callbackQNA,callbackLogin,callbackLogout,callbackLsch,callbackAsch,callbackSearchMeetRoom,callbackOrderMeetRoom,callbackBing){
 		luis.askLuisIntent(Question,function(intentData){  // 自己定义回调处理json，类似这种方式
 			intent = intentData.topScoringIntent.intent
 			entities = intentData.entities
@@ -154,6 +154,9 @@ module.exports = {
 					break;
 				case 'Login':
 					callbackLogin()
+					break;
+				case 'LogOut':
+					callbackLogout()
 					break;
 				case 'SearchCalendar':
 					var times = getTime(entities);

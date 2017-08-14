@@ -236,6 +236,11 @@ bot.dialog('/', [
                     userInfo[userId]['PromptStatus'] = 'LoginHalf';
                     session.send('请输入用户名哦~');
                 },
+                function(){
+                    //Logout
+                    userInfo[userId]['Login'] = undefined;
+                    session.send('退出成功');
+                },
                 function(times){
                     //SearchCalen
                     if(userInfo[userId]['Login'] == undefined){

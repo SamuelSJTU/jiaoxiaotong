@@ -262,7 +262,7 @@ createCards["cardHelp"] = function(session){
             ])
             .buttons([
                 builder.CardAction.postBack(session, '交大男女比例有多少', '交大男女比例有多少'),
-                builder.CardAction.postBack(session, '教务处网址是什么', '教务处网址是什么'),
+                builder.CardAction.postBack(session, '交大有多少研究生', '交大有多少研究生'),
                 builder.CardAction.postBack(session, '交大哪个学院规模最大', '交大哪个学院规模最大')
             ]), 
             new builder.HeroCard(session)
@@ -285,9 +285,9 @@ createCards["cardHelp"] = function(session){
                 builder.CardImage.create(session, 'https://c1.staticflickr.com/5/4365/36454876766_13f176be14_c.jpg')
             ])
             .buttons([
-                builder.CardAction.postBack(session, '编译原理在哪里上课', '编译原理在哪里上课'),
-                builder.CardAction.postBack(session, '高数1考场在哪里', '高数1考场在哪里'),
-                builder.CardAction.postBack(session, '交大有机器学习相关的课吗', '机器学习相关的课')
+                builder.CardAction.postBack(session, '程帆的离散数学在哪里上课', '程帆的离散数学在哪里上课'),
+                builder.CardAction.postBack(session, '编程综合实践的老师是', '编程综合实践的老师是'),
+                builder.CardAction.postBack(session, '计量经济学瞿茜考试地点', '计量经济学瞿茜考试地点')
             ]), 
             new builder.HeroCard(session)
             .title('出行导航')
@@ -297,8 +297,8 @@ createCards["cardHelp"] = function(session){
                 builder.CardImage.create(session, 'https://c1.staticflickr.com/5/4439/36454876516_43710c208c_c.jpg')
             ])
             .buttons([
-                builder.CardAction.postBack(session, '东川路站怎么走', '怎么去东川路站'),
-                builder.CardAction.postBack(session, '思源门怎么走', '怎么去思源门'),
+                builder.CardAction.postBack(session, '菁菁堂怎么去', '菁菁堂怎么去'),
+                builder.CardAction.postBack(session, '华联到一餐怎么走', '华联到一餐怎么走'),
                 builder.CardAction.postBack(session, '东下院到二餐怎么走', '东下院到二餐怎么走')
             ]),
          new builder.HeroCard(session)
