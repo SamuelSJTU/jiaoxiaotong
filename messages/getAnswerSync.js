@@ -138,9 +138,9 @@ module.exports = {
 			}
 		}else{
 			for(var i in dataset){
-				if(dataset[i][0]==userName && dataset[i][1]==time){
+				if(dataset[i][0]==userName && dataset[i][2]==time){
 					res+=dataset[i][2];
-					res+=": ";
+					res+=" ";
 					res+=dataset[i][3];
 					res+=" ";
 				}

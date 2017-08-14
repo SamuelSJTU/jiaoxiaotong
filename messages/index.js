@@ -240,7 +240,14 @@ bot.dialog('/', [
                         GAS.addCalendarData(times,userInfo[userId]['Login'],content);
                         session.send('Add Calendar Success');
                     }
-                    
+                },
+                function(res){
+                    //查看小组自习室
+                    session.send(res);
+                },
+                function(res){
+                    //预约小组自习室
+                    session.send(res);
                 },
                 function(ans){
                     //BingCallBack

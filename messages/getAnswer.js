@@ -57,8 +57,13 @@ function getRestTime(entities,Question){
 		} 
 	}
 	// var substr1 = Question.substring(0,startIndex);
-	var substr2 = Question.substring(endIndex+1,Question.length);
-	return substr2;
+	var res = "";
+	if(startIndex == 0 && endIndex == 0){
+		res = Question.substring(4,Question.length);
+	}else{
+		res = Question.substring(endIndex+1,Question.length);
+	}
+	return res;
 }
 
 
@@ -80,7 +85,7 @@ module.exports = {
 		}
 		return '';
 	},
-	getAnswer:function(Question,lastanswerentity,lastentity,lastrelation,dataset,callbackMap,callbackAnswer,callbackLesson,callbackExam,callbackQNA,callbackLogin,callbackLsch,callbackAsch,callbackBing){
+	getAnswer:function(Question,lastanswerentity,lastentity,lastrelation,dataset,callbackMap,callbackAnswer,callbackLesson,callbackExam,callbackLife,callbackLogin,callbackLsch,callbackAsch,callbackSearchMeetRoom,callbackOrderMeetRoom,callbackBing){
 		luis.askLuisIntent(Question,function(intentData){  // 自己定义回调处理json，类似这种方式
 			intent = intentData.topScoringIntent.intent
 			entities = intentData.entities
@@ -125,10 +130,18 @@ module.exports = {
 					callbackExam(answer,entities,relation);
 					break;
 				case 'AskLife':
-					QBH.askQnAMaker(Question,function(answers){
-						// 默认长度设置为1个
-						callbackQNA('by QNA: '+answers[0].answer);
-					});
+					var questionTriple = getQuestionTriples(entities);
+					console.log(questionTriple);
+					// var questionTriple = test_triple;
+					console.log('questionTriple is: ',questionTriple);
+					//注意传入的qrealations为3元组（content,start,end）集合
+					var relations = questionTriple[1];
+					var qentities = questionTriple[0];
+					var descriptions = questionTriple[2];
+					var answer = myutils.process('','',relations,qentities,descriptions,'AskInfo',dataset,Question);
+					// if(answer == 'i dont know') answer = afterProcessAnswer(lastanswerentity,lastentity,lastrelation,relations,qentities,descriptions,'AskInfo',dataset);
+					// callbackAnswer(answer,questionTriple[1],questionTriple[0],questionTriple[2],intent);
+					callbackLife(answer);
 					break;
 				case 'AskQA':
 					QBH.askQnAMaker(Question,function(answers){
@@ -149,6 +162,21 @@ module.exports = {
 					var time = times.length == 0 ? "" : times[0];
 					callbackAsch(time,getRestTime(entities,Question));
 					break;
+				case 'SearchMeetingroom':
+					var times = getTime(entities);
+					var time = times.length == 0 ? "" : times[0];
+					var res;
+					if(time == ""){
+						res = "请补充时间信息";
+					}else{
+						res = time.substring(0,10);
+					}
+					callbackSearchMeetRoom(res);
+					break;
+				case 'OrderMeetingroom':
+					callbackOrderMeetRoom('预约成功');
+					break;
+
 				default:
 					//if intent is None
 					QBH.askBing(Question,function(ans){
