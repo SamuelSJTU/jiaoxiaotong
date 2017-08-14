@@ -166,7 +166,7 @@ bot.dialog('/', [
                             console.log('bing',ans);
                         });                    
                     }else{
-                        session.send(answer);
+                        session.send('FromAskInfo'+answer);
                     }
                     userInfo[userId]['LastQuestionEntity'] = answer;
                 },
@@ -205,6 +205,7 @@ bot.dialog('/', [
                         });
                         return
                     }else{
+
                         session.send(answer);
                     }
                 },
