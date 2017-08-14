@@ -285,9 +285,9 @@ createCards["cardHelp"] = function(session){
                 builder.CardImage.create(session, 'https://c1.staticflickr.com/5/4365/36454876766_13f176be14_c.jpg')
             ])
             .buttons([
-                builder.CardAction.postBack(session, '程帆的离散数学在哪里上课', '程帆的离散数学在哪里上课'),
+                builder.CardAction.postBack(session, '计量经济学瞿茜考试地点', '计量经济学瞿茜考试地点'),
                 builder.CardAction.postBack(session, '编程综合实践的老师是', '编程综合实践的老师是'),
-                builder.CardAction.postBack(session, '计量经济学瞿茜考试地点', '计量经济学瞿茜考试地点')
+                builder.CardAction.postBack(session, '夏正敏的C语言程序设计教室', '夏正敏的C语言程序设计教室')
             ]), 
             new builder.HeroCard(session)
             .title('出行导航')
