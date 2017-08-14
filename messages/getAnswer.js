@@ -77,7 +77,7 @@ function getStudyRoomList(date){
 	var datas = myio.readStudyRoom();
 	var roomlist = new Array();
 	for(var i in datas){
-		if((datas[i][1]==date) && datas[i][2]=="1") roomlist.push(datas[0]);
+		if((datas[i][1]==date) && datas[i][2]=="1") roomlist.push(datas[i][0]);
 	}
 	return roomlist;
 }
