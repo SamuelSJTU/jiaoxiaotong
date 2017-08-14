@@ -44,8 +44,8 @@ function askBing(query,callback)
             // callback(JSON.parse(data));  // 响应结束调用callback函数,为自己输入的函数句柄
              var jdata = JSON.parse(data);
              var webPages = jdata.webPages.value;
-             // var ans = webPages[0].snippet;
-             callback(webPages);
+             var ans = webPages[0].snippet;
+             callback(ans);
 
 
         });
