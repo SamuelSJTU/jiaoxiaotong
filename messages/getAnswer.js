@@ -85,7 +85,7 @@ module.exports = {
 		}
 		return '';
 	},
-	getAnswer:function(Question,lastanswerentity,lastentity,lastrelation,dataset,callbackMap,callbackAnswer,callbackLesson,callbackExam,callbackLife,callbackLogin,callbackLsch,callbackAsch,callbackSearchMeetRoom,callbackOrderMeetRoom,callbackBing){
+	getAnswer:function(Question,lastanswerentity,lastentity,lastrelation,dataset,callbackMap,callbackAnswer,callbackLesson,callbackExam,callbackLife,callbackQNA,callbackLogin,callbackLsch,callbackAsch,callbackSearchMeetRoom,callbackOrderMeetRoom,callbackBing){
 		luis.askLuisIntent(Question,function(intentData){  // 自己定义回调处理json，类似这种方式
 			intent = intentData.topScoringIntent.intent
 			entities = intentData.entities
