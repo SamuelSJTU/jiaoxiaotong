@@ -47,6 +47,11 @@ bot.dialog('/', [
     function (session) {
         var userId = session.message.user.id;
         var question = session.message.text;
+        if(question.indexOf('食堂')!=-1){
+            var msg = cards.createCards["cardCanteen"](session,webPages); 
+            session.send(msg);
+            return;
+        }
         myio.write(question);
         if(userInfo[userId]==undefined) userInfo[userId] = new Array();
         var question_temp = question.split("#");
@@ -166,7 +171,7 @@ bot.dialog('/', [
                             console.log('bing',ans);
                         });                    
                     }else{
-                        session.send('FromAskInfo'+answer);
+                        session.send(answer);
                     }
                     userInfo[userId]['LastQuestionEntity'] = answer;
                 },
