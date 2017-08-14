@@ -197,6 +197,10 @@ bot.dialog('/', [
                     }
                 },
                 function(answer){
+                    //AskLife             
+                    session.send(answer);
+                },
+                function(answer){
                     //AskQnaMaker                
                     if(answer=='No good match found in the KB')
                     {

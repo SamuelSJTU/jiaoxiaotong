@@ -45,7 +45,15 @@ function getTime(entities){
 	return times;
 }
 
-
+function getStudyRoom(entities){
+	var room = "";
+	for(var i in entities){
+		var entity = entities[i];
+		var val = entity['resolution']['values'] != undefined ? entity['resolution']['values'][0]['value']: "";
+		if(entity.type == '小组学习室') return val;
+	}
+	return room;
+}
 function getRestTime(entities,Question){
 	var startIndex=0;var endIndex=0;
 	for(var i in entities){
@@ -174,7 +182,10 @@ module.exports = {
 					callbackSearchMeetRoom(res);
 					break;
 				case 'OrderMeetingroom':
-					callbackOrderMeetRoom('预约成功');
+					var times = getTime(entities);
+					var time = times.length == 0 ? "" : times[0];
+					var room = getStudyRoom(entities);
+					callbackOrderMeetRoom('Room'+room+"time"+time);
 					break;
 				default:
 					//if intent is None
