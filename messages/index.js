@@ -62,7 +62,6 @@ bot.dialog('/', [
         if(q_type=='demo'){
             question = question.substring(4,question.length);
             QBH.askQnAMakerDemo(question,function(answers){
-
                 var answer = answers[0].answer;
                 if(userInfo[userId]['speakerName']!='未知'){
                     answer = answer.replace('[人名]',userInfo[userId]['speakerName']);
@@ -150,7 +149,7 @@ bot.dialog('/', [
 
                         userInfo[userId]['PromptStatus'] = 'PathHalf';
                         userInfo[userId]['LastEntities'] = qentities;
-                        session.send('please complete your Path info~');
+                        session.send('请完善您的出发点目的地信息');
                     }else{
                          session.send(answer);
                     }
@@ -178,7 +177,7 @@ bot.dialog('/', [
                         userInfo[userId]['PromptStatus'] = 'LessonHalf';
                         userInfo[userId]['LastEntities'] = qentities;
                         userInfo[userId]['LastRelation'] = qrelation;
-                        session.send('please complete your lesson info~');
+                        session.send('缺少信息 需要任课教师和课程名');
                     }else{
                         session.send(answer);
                     }
@@ -191,7 +190,7 @@ bot.dialog('/', [
                         userInfo[userId]['PromptStatus'] = 'ExamHalf';
                         userInfo[userId]['LastEntities'] = qentities;
                         userInfo[userId]['LastRelation'] = qrelation;
-                        session.send('please complete your exam info~');
+                        session.send('缺少考试信息 需要任课教师和课程名');
                     }else{
                         session.send(answer);
                     }
@@ -212,12 +211,12 @@ bot.dialog('/', [
                 function(){
                     //Login
                     userInfo[userId]['PromptStatus'] = 'LoginHalf';
-                    session.send('Please input your user name');
+                    session.send('请输入用户名哦~');
                 },
                 function(times){
                     //SearchCalen
                     if(userInfo[userId]['Login'] == undefined){
-                        session.send('please Login First And Input your username');
+                        session.send('请先登录并输入您的用户名哦');
                         userInfo[userId]['PromptStatus'] = 'LoginHalf';
                         userInfo[userId]['LastIntent'] = 'SearchCalendar';
                     }else{
@@ -229,7 +228,7 @@ bot.dialog('/', [
                 function(times,content){
                     //AddCalen
                     if(userInfo[userId]['Login'] == undefined){
-                        session.send('please Login First And Input your username');
+                        session.send('请先登录并输入您的用户名哦');
                         userInfo[userId]['PromptStatus'] = 'LoginHalf';
                         userInfo[userId]['LastIntent'] = 'AddCalendar';
                         userInfo[userId]['CalContent'] = content;
@@ -237,26 +236,34 @@ bot.dialog('/', [
                         console.log(times);
                     }else{
                         GAS.addCalendarData(times,userInfo[userId]['Login'],content);
-                        session.send('Add Calendar Success');
+                        session.send('添加行程成功');
                     }
                 },
                 function(res){
                     //查看小组自习室
+
                     session.send(res);
                 },
                 function(res){
                     //预约小组自习室
-                    session.send(res);
+                    if(userInfo[userId]['Login'] == undefined){
+                        session.send('请先登录并输入您的用户名哦');
+                        userInfo[userId]['PromptStatus'] = 'LoginHalf';
+                    }else{
+                        session.send(res);
+                    }
                 },
                 function(ans){
                     //BingCallBack
-                    session.send('I cant find your Intent, The res from Bing: '+ans);
+                    session.send('我们推荐来自Bing的结果'+ans);
                 }
             );
         }
        
     }
 ]);
+
+
 
 if (useEmulator) {
     var restify = require('restify');
