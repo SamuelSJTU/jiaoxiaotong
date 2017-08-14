@@ -43,7 +43,14 @@
 // console.log(mu.removeSmallEntity(arr1,arr1));
 // var Q = "123456";
 // console.log(Q.substring(3,Q.length))
-var str = 'aaabbbcccaaabbbccc';   
-　　var reg = 'aaa';   
-　　var res = str.replace(reg, '111');
-console.log(res); 
+var myio = require("./myIO.js");
+function getStudyRoomList(date){
+	var datas = myio.readStudyRoom();
+	console.log(datas);
+	var roomlist = new Array();
+	for(var i in datas){
+		if((datas[i][1]==date) && datas[i][2]=="1") roomlist.push(datas[i][0]);
+	}
+	return roomlist;
+}
+console.log(getStudyRoomList("2017-08-15").toString());

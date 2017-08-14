@@ -93,8 +93,8 @@ module.exports = {
 		    }  
 		});
 	},
-	readStudyRoom:function(data){
-		var data = rf.readFileSync(path.join(__dirname, './testcanData.txt'),"utf-8");
+	readStudyRoom:function(){
+		var data = rf.readFileSync(path.join(__dirname, './SelfStudyRoom.txt'),"utf-8");
 		var datas = data.split("\r\n");
 		for(var i in datas){
 			datas[i] = datas[i].split("\t");
