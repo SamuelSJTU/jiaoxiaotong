@@ -47,9 +47,6 @@ bot.dialog('/', [
     function (session) {
         var userId = session.message.user.id;
         var question = session.message.text;
-
-
-
         myio.write(question);
         if(userInfo[userId]==undefined) userInfo[userId] = new Array();
         var question_temp = question.split("#");
