@@ -51,7 +51,19 @@ bot.dialog('/', [
             var msg = cards.createCards["cardCanteen"](session); 
             session.send(msg);
             return;
-        }
+        }else if(question.indexOf('校车')!=-1){
+            var msg = cards.createCards["cardShuttle"](session); 
+            session.send(msg);
+            return;
+        }else if(question.indexOf('巴士')!=-1){
+            var msg = cards.createCards["cardBus"](session); 
+            session.send(msg);
+            return;
+        }else if(question.indexOf('校歌')!=-1){
+            var msg = cards.createCards["cardAnthem"](session); 
+            session.send(msg);
+            return;}
+
         myio.write(question);
         if(userInfo[userId]==undefined) userInfo[userId] = new Array();
         var question_temp = question.split("#");
