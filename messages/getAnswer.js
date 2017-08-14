@@ -181,14 +181,15 @@ module.exports = {
 					var times = getTime(entities);
 					var time = times.length == 0 ? "" : times[0];
 					var room = getStudyRoom(entities);
-					var res;
+					var res ="";
 					if(time == ""){
 						res = "请补充时间信息";
 					}else{
 						var date= time.substring(0,10);
 						rooms = getStudyRoomList(date);
-						if(rooms.indexOf(room)!=-1) res = "预约成功";
-						else res = "该房间已被其他同学使用啦";
+						res+=date;
+						if(rooms.indexOf(room)!=-1) res += "预约成功";
+						else res += "该房间已被其他同学使用啦";
 					}
 					callbackOrderMeetRoom(res);
 					break;
