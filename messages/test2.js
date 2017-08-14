@@ -55,22 +55,22 @@
 // }
 // console.log(getStudyRoomList("2017-08-15").indexOf('E211'))
 
-// var path = require("path");
-// var rf = require("fs");
-// var data = rf.readFileSync(path.join(__dirname, './lessonData.txt'),"utf-8");
-// var datas = data.split("\r\n");
-// for(i in datas){
-// 	if(i % 8 == 1 || i % 8 == 5){
-// 		rf.appendFile(path.join(__dirname, './testlessonData.txt'),datas[i]+'\r\n','utf8',function(err){  
-// 		    if(err)  
-// 		    {  
-// 		        console.log(err);  
-// 		    }  
-// 		});
-// 	}
-// }
+var path = require("path");
+var rf = require("fs");
+var data = rf.readFileSync(path.join(__dirname, './examData.txt'),"utf-8");
+var datas = data.split("\r\n");
+for(i in datas){
+	if(i % 12 == 9 || i % 12 == 10 || i % 12 == 11 || i % 12 == 12){
+		rf.appendFile(path.join(__dirname, './testexamData.txt'),datas[i]+'\r\n','utf8',function(err){  
+		    if(err)  
+		    {  
+		        console.log(err);  
+		    }  
+		});
+	}
+}
 // var myio = require('./myIO.js');
 // var data = myio.readNewData();
 // console.log(data[14][3]);
-var cards = require('./cards');
-console.log(cards.isCard("cardCanteen"));
+// var cards = require('./cards');
+// console.log(cards.isCard("cardCanteen"));
