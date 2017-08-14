@@ -49,9 +49,10 @@ bot.dialog('/', [
         var question = session.message.text;
 
         session.send('小通不知道，小通用Bing给你搜索下');
-        QBH.askBing('小通，有什么是你不会的吗？',function(webPages){
+        QBH.askBing('小通 有什么是你不会的吗？',function(webPages){
                         var msg = cards.createCards["cardBing"](session,webPages); 
                         session.send(msg);
+                     });
 
 
         myio.write(question);
