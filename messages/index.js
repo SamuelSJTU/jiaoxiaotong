@@ -62,7 +62,12 @@ bot.dialog('/', [
         }else if(question.indexOf('校歌')!=-1){
             var msg = cards.createCards["cardAnthem"](session); 
             session.send(msg);
-            return;}
+            return;
+        }else if(question.indexOf('你会')!=-1){
+            var msg = cards.createCards["cardHelp"](session); 
+            session.send(msg);
+            return;
+        }
 
         myio.write(question);
         if(userInfo[userId]==undefined) userInfo[userId] = new Array();
@@ -259,7 +264,6 @@ bot.dialog('/', [
                 },
                 function(res){
                     //查看小组自习室
-
                     session.send(res);
                 },
                 function(res){
