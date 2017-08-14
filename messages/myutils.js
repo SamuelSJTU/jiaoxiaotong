@@ -31,6 +31,7 @@ module.exports = {
 			//console.log('pudre'+puredes);
 			for(var i in dataset){
 				var kb = dataset[i];
+				//找到所有单描述的
 				var tags = kb[3];
 				if(qentities.length==1){
 					if((qentities[0]==kb[0] || qentities[0]==kb[2]) && this.isChildSet(puredes,tags)){
@@ -105,11 +106,7 @@ module.exports = {
 			}
 			//console.log('doublebest= '+doubleBestPair);
 			if(doubleBestPair==undefined || doubleBestPair.length == 0 || doubleBestPair[1]==-1){
-				if(singleBestPair[1]==-1){
-					var qrelations = this.disIndex(qrelations);
-					if(qrelations.indexOf('邮箱')!=-1) return 'idontknow@sjtu.edu.cn'
-					return 'i dont know';
-				} 
+				if(singleBestPair[1]==-1) return 'i dont know';
 				// console.log(singleBestPair);
 				else return singleBestPair[0];
 			}
@@ -125,11 +122,9 @@ module.exports = {
 		var score=0;
 		var descriptions=[];
 		if(tags!=undefined){
-			if(tags.indexOf('默认')!=0) score+=0.5;
-			if(qrelation == '数量' && tags.indexOf('默认')!=0) score-=0.45;
+			if(tags.indexOf('默认')>=0) score+=0.5;
+			if(qrelation == '数量' && score>=0.5) score-=0.55;
 		}
-
-		
 		for (i in qdescriptions){
 			if(tags!=undefined){
 				if(tags.indexOf(qdescriptions[i])>=0){

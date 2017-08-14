@@ -11,6 +11,7 @@ var GAS = require('./getAnswerSync.js');
 var PromptStatus = ['LessonHalf','PathHalf','LoginHalf','ExamHalf','RegisterHalf'];
 var myutils2 = require('./myutils2.js');
 var QBH = require('./QB_api.js');
+var alldingyu = [];
 function getQuestionTriples(entities){
 		var qrelations = new Array();
 		var qentities = new Array();
