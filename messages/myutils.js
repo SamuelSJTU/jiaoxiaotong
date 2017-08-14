@@ -126,8 +126,10 @@ module.exports = {
 		var descriptions=[];
 		if(tags!=undefined){
 			if(tags.indexOf('默认')!=0) score+=0.5;
-			// if(qrelation == '数量' && tags.indexOf('默认')!=0) score-=0.45;
+			if(qrelation == '数量' && tags.indexOf('默认')!=0) score-=0.45;
 		}
+
+		
 		for (i in qdescriptions){
 			if(tags!=undefined){
 				if(tags.indexOf(qdescriptions[i])>=0){

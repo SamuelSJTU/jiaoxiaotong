@@ -22,7 +22,7 @@ function getQuestionTriples(entities){
 			var ei = entity.endIndex;
 			if(relationSet.indexOf(entity['type'])!=-1){
 				qrelations.push([val,si,ei]);
-			}else if(entity['type']=='定语' || entity['type']=='builtin.number'){
+			}else if(entity['type']=='其他定语' || entity['type']=='builtin.number'){
 				qdescriptions.push([val,si,ei]);
 			}else{
 				qentities.push([val,si,ei]);

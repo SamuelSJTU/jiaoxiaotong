@@ -17,7 +17,7 @@ module.exports = {
 	},
 	readNewData:function(){
 		var data = rf.readFileSync(path.join(__dirname, './newData.txt'),"utf-8");
-		var datas = data.split("\r\n");
+		var datas = data.split("\n");
 		for(var i in datas){
 			datas[i] = datas[i].split("\t\t");
 			for(var j in datas[i]){
