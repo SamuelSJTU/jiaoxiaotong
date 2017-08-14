@@ -43,29 +43,29 @@
 // console.log(mu.removeSmallEntity(arr1,arr1));
 // var Q = "123456";
 // console.log(Q.substring(3,Q.length))
-var myio = require("./myIO.js");
-function getStudyRoomList(date){
-	var datas = myio.readStudyRoom();
-	// console.log(datas);
-	var roomlist = new Array();
-	for(var i in datas){
-		if((datas[i][1]==date) && datas[i][2]=="1") roomlist.push(datas[i][0]);
-	}
-	return roomlist;
-}
-console.log(getStudyRoomList("2017-08-15").indexOf('E211'))
-
-// var path = require("path");
-// var rf = require("fs");
-// var data = rf.readFileSync(path.join(__dirname, './examData.txt'),"utf-8");
-// var datas = data.split("\r\n");
-// for(i in datas){
-// 	if((i % 12)==7 || (i % 12)==8 || (i % 12)==9 || (i % 12)==10){
-// 		rf.appendFile(path.join(__dirname, './testexamData.txt'),datas[i]+'\r\n','utf8',function(err){  
-// 		    if(err)  
-// 		    {  
-// 		        console.log(err);  
-// 		    }  
-// 		});
+// var myio = require("./myIO.js");
+// function getStudyRoomList(date){
+// 	var datas = myio.readStudyRoom();
+// 	// console.log(datas);
+// 	var roomlist = new Array();
+// 	for(var i in datas){
+// 		if((datas[i][1]==date) && datas[i][2]=="1") roomlist.push(datas[i][0]);
 // 	}
+// 	return roomlist;
 // }
+// console.log(getStudyRoomList("2017-08-15").indexOf('E211'))
+
+var path = require("path");
+var rf = require("fs");
+var data = rf.readFileSync(path.join(__dirname, './lessonData.txt'),"utf-8");
+var datas = data.split("\r\n");
+for(i in datas){
+	if(i % 8 == 1 || i % 8 == 5){
+		rf.appendFile(path.join(__dirname, './testlessonData.txt'),datas[i]+'\r\n','utf8',function(err){  
+		    if(err)  
+		    {  
+		        console.log(err);  
+		    }  
+		});
+	}
+}
