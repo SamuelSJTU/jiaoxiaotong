@@ -9,7 +9,7 @@ https://aka.ms/abs-node-waterfall
 var builder = require("botbuilder");
 var botbuilder_azure = require("botbuilder-azure");
 var path = require('path');
-var TypeApi = 'https://southeastasia.api.cognitive.microsoft.com/luis/v2.0/apps/0b51b9e7-2200-40c5-9a7d-d644b430364e?subscription-key=fc7f3816353045959d517198742e11e3&timezoneOffset=0&verbose=true&q=';
+var TypeApi = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/0b51b9e7-2200-40c5-9a7d-d644b430364e?subscription-key=942cda48c103493883d488ed9dafe234&verbose=true&timezoneOffset=0&q=';
 var fs = require('fs');
 var myutils = require('./myutils.js');
 
@@ -24,8 +24,8 @@ var myio = require('./myIO.js');
 var GAS = require('./getAnswerSync');
 var QBH = require('./QB_api.js');
 
-//var useEmulator = (process.env.NODE_ENV == 'development');
-var useEmulator = false;
+var useEmulator = (process.env.NODE_ENV == 'development');
+// var useEmulator = false;
 var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure.BotServiceConnector({
     appId: process.env['MicrosoftAppId'],
     appPassword: process.env['MicrosoftAppPassword'],
@@ -183,9 +183,11 @@ bot.dialog('/', [
                         var msg = cards.createCards[answer](session);  // 返回card生成的msg
                         session.send(msg);
                     }else if(answer == 'i dont know'){
-                        QBH.askBing(question,function(ans){
-                            session.send(ans);
-                            console.log('bing',ans);
+                        QBH.askBing(question,function(webPages){
+                            var msg = cards.createCards["cardBing"](session,webPages);
+                            session.send(msg); 
+                            //session.send(webPages[0].name);
+                            //console.log('bing',webPages[0].name);
                         });                    
                     }else{
                         session.send(answer);
@@ -221,9 +223,9 @@ bot.dialog('/', [
                     //AskQnaMaker                
                     if(answer=='No good match found in the KB')
                     {
-                        QBH.askBing(question,function(res){
-                            // var msg = cards.createCards["cardBing"](session,webPages); 
-                            session.send(res);
+                        QBH.askBing(question,function(webPages){
+                            var msg = cards.createCards["cardBing"](session,webPages); 
+                            session.send(msg);
                         });
                         return
                     }else{
